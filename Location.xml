@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="locations.xsl" type="text/xsl"?>
+
+<Locations>
+	<location id="1">
+		<LName>sittingroom</LName>
+		<NN>L1</NN>
+	</location>
+	<location id="2">
+		<LName>bedroom</LName>
+		<NN>L2</NN>
+	</location>	
+	<location id="3">
+		<LName>balcony</LName>
+		<NN>L3</NN>
+	</location>
+</Locations>

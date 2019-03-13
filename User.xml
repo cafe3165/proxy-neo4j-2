@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="user.xsl" type="text/xsl"?>
+
+<Users>
+		<User id="1">
+			<UName>Jack</UName>
+			<NN>U1</NN>
+			<LName>sittingroom</LName>
+		</User>
+		<User id="2">
+			<UName>Ken</UName>
+			<NN>U2</NN>
+			<LName>bedroom</LName>
+		</User>
+		<User id="3">
+			<UName>Sansevieria</UName>
+			<NN>U3</NN>
+			<LName>sittingroom</LName>
+		</User>
+		<User id="4">
+			<UName>Cactus</UName>
+			<NN>U4</NN>
+			<LName>balcony</LName>
+		</User>
+		<User id="5">
+			<UName>Lily</UName>
+			<NN>U5</NN>
+			<LName>balcony</LName>
+		</User>
+	
+</Users>

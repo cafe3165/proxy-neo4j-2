@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="user.xsl" type="text/xsl"?>
+
+<Devices>
+		<Device id="1">
+			<DName>Airconditioner</DName>
+			<LName>sittingroom</LName>
+			<Key>Temperature</Key>
+			<Value>22</Value>
+			<NN>D1</NN>
+		</Device>
+		<Device id="2">
+			<DName>SmartLight</DName>
+			<LName>sittingroom</LName>
+			<Key>Brightness</Key>
+			<Value>22</Value>
+			<NN>D2</NN>
+		</Device>
+		<Device id="3">
+			<DName>PMMonitor</DName>
+			<LName>sittingroom</LName>
+			<Key>PM2.5</Key>
+			<Value>22</Value>
+			<NN>D3</NN>
+		</Device>
+		<Device id="4">
+			<DName>Air2s</DName>
+			<LName>sittingroom</LName>
+			<Key>PM2.5</Key>
+			<Value>22</Value>
+			<NN>D4</NN>
+		</Device>
+		<Device id="5">
+			<DName>Airconditioner</DName>
+			<LName>bedroom</LName>
+			<Key>Temperature</Key>
+			<Value>22</Value>
+			<NN>D5</NN>
+		</Device>
+		<Device id="6">
+			<DName>SmartLight</DName>
+			<LName>bedroom</LName>
+			<Key>Brightness</Key>
+			<Value>22</Value>
+			<NN>D6</NN>
+		</Device>
+		<Device id="7">
+			<DName>FlowerMonitor</DName>
+			<LName>balcony</LName>
+			<Key>Humidity</Key>
+			<Value>22</Value>
+			<NN>D7</NN>
+		</Device>
+		<Device id="8">
+			<DName>SmartWaterPump</DName>
+			<LName>balcony</LName>
+			<Key>Humidity</Key>
+			<Value>22</Value>
+			<NN>D8</NN>
+		</Device>
+		
+</Devices>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="context.xsl" type="text/xsl"?>
+
+<Contexts>
+		<Context id="1">
+			<UName>Jack</UName>
+			<LName>sittingroom</LName>
+			<Key NN="C11">
+				<CType>Temperature</CType>
+				<Value>22</Value>
+				<RMin>19</RMin>
+				<RMax>26</RMax>
+			</Key>
+			<Key NN="C13">
+				<CType>Brightness</CType>
+				<Value>22</Value>
+				<RMin>20</RMin>
+				<RMax>100</RMax>
+			</Key>
+			<Key NN="C14">
+				<CType>PM2.5</CType>
+				<Value>22</Value>
+				<RMin>0</RMin>
+				<RMax>35</RMax>
+			</Key>
+		</Context>
+		<Context id="2">
+			<UName>Ken</UName>
+			<LName>bedroom</LName>
+			<Key NN="C21">
+				<CType>Temperature</CType>
+				<Value>22</Value>
+				<RMin>22</RMin>
+				<RMax>26</RMax>
+			</Key>
+			<Key NN="C23">
+				<CType>Brightness</CType>
+				<Value>22</Value>
+				<RMin>20</RMin>
+				<RMax>100</RMax>
+			</Key>
+			<Key NN="C24">
+				<CType>PM2.5</CType>
+				<Value>22</Value>
+				<RMin>0</RMin>
+				<RMax>35</RMax>
+			</Key>
+		</Context>
+		
+</Contexts>
