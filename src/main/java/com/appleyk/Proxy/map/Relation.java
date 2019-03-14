@@ -30,10 +30,15 @@ import com.appleyk.Proxy.relation.*;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.nullValue;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,11 +66,21 @@ public class Relation {
 	// 运行时对象标识与运行时对象的映射 k-运行时对象的hashcode v-运行时对象
 	public static Map<String, Object> idObjmaps = new HashMap<>();
 
-	// 底层设备id与运行时对象标识的映射  k-底层设备id v-运行时对象的hashcode  A1:685325104
+	// 底层设备id与运行时对象标识的映射 k-底层设备id v-运行时对象的hashcode A1:685325104
 	public static Map<String, String> idmaps = new HashMap<>();
+	// 底层设备id与运行时对象的映射 k-底层设备id v-运行时对象
+	public static Map<String, Object> uidMaps = new HashMap<>();
 
-	// 服务id与运行时设备id的映射  k-服务id v-运行时设备id  S11:2101973421
+	// 服务id与运行时设备id的映射 k-服务id v-运行时设备id S11:2101973421
 	public static Map<String, String> SerDevMaps = new HashMap<>();
+	
+//	存放服务id与服务对象的映射
+	public static Map<String, Object> serMap = new HashMap<>();
+	
+//	存放服务id与环境id的映射
+	public static Map<String, String> serConMap = new HashMap<>();
+//	存放环境id与环境对象的映射
+	public static Map<String, Object> contMap = new HashMap<>();
 
 	/**
 	 * 这边应该是读取配置文件得到映射关系 ，但我这边直接初始化映射关系
@@ -157,10 +172,9 @@ public class Relation {
 	/**
 	 * 通过配置文件生成底层设备，这边我就手动写设备
 	 */
-	public static void generateDeviceAndRuntime() throws Exception {
+	public static void generateDeviceAndRuntime(Map<String, String> cmdMaps) throws Exception {
 
-//		存放服务id与服务对象的映射
-		Map<String, Object> serMap = new HashMap<>();
+
 
 //		存放位置id与位置对象的映射
 		Map<String, Object> locationMap = new HashMap<>();
@@ -174,10 +188,7 @@ public class Relation {
 //		存放用戶id与用戶名的映射
 		Map<String, String> userIdNameMap = new HashMap<>();
 
-//		存放服务id与环境id的映射
-		Map<String, String> serConMap = new HashMap<>();
-//		存放环境id与环境对象的映射
-		Map<String, Object> contMap = new HashMap<>();
+
 
 //		List<HashMap<String, Object>> idObjList = new ArrayList<HashMap<String,Object>>();
 
@@ -207,7 +218,7 @@ public class Relation {
 
 //		System.out.println("空调名： "+panasonic.getDName());
 //		System.out.println("空调当前温度: "+panasonic.getT());
-		
+
 		// 运行时空调对象集合，有添加空调的方法addlist和列出运行时空调的方法list
 		Devices airConditions = new Devices();
 		// 遍历运行时对象标识与底层设备id的映射，添加运行时设备对应的底层设备id
@@ -216,7 +227,7 @@ public class Relation {
 		}
 		// 列出运行时的空调对应的底层空调
 //		System.out.println("当前设备为：");
-//		List<String> airCList = airConditions.list();
+		List<String> airCList = airConditions.list();
 //		根据设备id获得所有设备的属性
 //		System.out.println("设备属性列表：");
 //		for (String underDeviceId : airCList) {
@@ -227,11 +238,14 @@ public class Relation {
 //		}
 //		System.out.println();
 
+		uidMaps.put(ndAirCondition.getID(), ndAirCondition);
+		uidMaps.put(panasonic.getID(), panasonic);
+
 		String ServiceId = "S11";
 		String DName = "Gree";
-		String CType = "Temperature";
+		String CType = "temperature";
 		String Effect = "Reduce";
-		
+
 		String DeviceId = findUnderid(gree.hashCode());
 		String RutimeDeviceId = String.valueOf(gree.hashCode());
 
@@ -239,28 +253,28 @@ public class Relation {
 		String DeviceId2 = findUnderid(panasonic.hashCode());
 		String RutimeDeviceId2 = String.valueOf(panasonic.hashCode());
 		String DName2 = "Panasonic";
-		String CType2 = "Temperature";
+		String CType2 = "temperature";
 		String Effect2 = "Reduce";
 
 		String ServiceId3 = "S22";
 		String DeviceId3 = findUnderid(panasonic.hashCode());
 		String RutimeDeviceId3 = String.valueOf(panasonic.hashCode());
 		String DName3 = "Panasonic";
-		String CType3 = "Temperature";
+		String CType3 = "temperature";
 		String Effect3 = "Increase";
 
 		String ServiceId4 = "S12";
 		String DeviceId4 = findUnderid(gree.hashCode());
 		String RutimeDeviceId4 = String.valueOf(gree.hashCode());
 		String DName4 = "Gree";
-		String CType4 = "Temperature";
+		String CType4 = "temperature";
 		String Effect4 = "Assign";
 
 		String ServiceId5 = "S23";
 		String DeviceId5 = findUnderid(panasonic.hashCode());
 		String RutimeDeviceId5 = String.valueOf(panasonic.hashCode());
 		String DName5 = "Panasonic";
-		String CType5 = "Temperature";
+		String CType5 = "temperature";
 		String Effect5 = "Monitor";
 
 		Service coolService = new Service();
@@ -310,13 +324,12 @@ public class Relation {
 		System.out.println("当前的服务为：");
 		SerList = services.list();
 
-		
 		System.out.println();
 //		测试设置服务属性值，根据映射设置设备属性值
 		String SerId2 = "S11";
 		String Value2 = "On";
 		String SKey2 = "Status";
-		services.SetDevProperties(SerId2, Value2, SKey2, SerDevMaps, idmaps, idObjmaps, objMaps, serMap,contMap);
+		services.SetDevProperties(SerId2, Value2, SKey2, SerDevMaps, idmaps, idObjmaps, objMaps, serMap, contMap);
 //		位置生成
 		String lName1 = "bedroom";
 		String lId1 = "L1";
@@ -337,9 +350,9 @@ public class Relation {
 		Locations ls = new Locations();
 		ls.addlist(l1.getLId());
 		ls.addlist(l2.getLId());
-		List<String> LList=ls.list();
-		ls.ListProperties(l1.getLId(), locationMap);
-		ls.ListProperties(l2.getLId(), locationMap);
+		List<String> LList = ls.list();
+//		ls.ListProperties(l1.getLId(), locationMap);
+//		ls.ListProperties(l2.getLId(), locationMap);
 
 		String UName1 = "Jack";
 		String UId1 = "U1";
@@ -358,7 +371,7 @@ public class Relation {
 		u1 = (User) initUser(UName1, ULName1, UId1, u1, locIdNameMap, uclist1);
 		u2 = (User) initUser(UName2, ULName2, UId2, u2, locIdNameMap, uclist2);
 
-		System.out.println(u1.getContextList());
+//		System.out.println(u1.getContextList());
 
 		userMap.put(u1.getUId(), u1);
 		userMap.put(u2.getUId(), u2);
@@ -375,9 +388,9 @@ public class Relation {
 //			User tempUser = (User) userMap.get(uid);
 //			users.ListProperties(tempUser.getUId(), userMap);
 //		}
-		
-		LocatedIn.createLocatedIn(UList,LList,userMap,locationMap);
-		
+
+		LocatedIn.createLocatedIn(UList, LList, userMap, locationMap);
+		LocatedIn.createLocatedIn(airCList, LList, uidMaps, locationMap);
 
 		Context c11 = new Context();
 		Context c21 = new Context();
@@ -415,13 +428,13 @@ public class Relation {
 //			contexts.ListProperties(cid, contMap);
 //			
 //		}
-		
+
 //		System.out.println(SerDevMaps);
 //		System.out.println(idmaps);
 		String SerId = "S12";
 		String Value = "50";
-		String SKey = "Temperature";
-		services.SetDevProperties(SerId, Value, SKey, SerDevMaps, idmaps, idObjmaps, objMaps, serMap,contMap);
+		String SKey = "Status";
+//		services.SetDevProperties(SerId, Value, SKey, SerDevMaps, idmaps, idObjmaps, objMaps, serMap, contMap);
 
 //		for (String si : SerList) {
 //			System.out.println("---------------------------");
@@ -435,8 +448,47 @@ public class Relation {
 //			
 //		}
 		
-	}
+		testCmd(cmdMaps,airConditions,services,ls);
 
+	}
+	//	核心是去找service，并最终执行
+	public static void testCmd(Map<String, String> cmdMaps,Devices devices,Services services,Locations locations) throws InterruptedException {
+//		devices.list();
+//		services.list();
+//		locations.list();
+		for(String id:devices.list()) {
+			devices.ListProperties(id, objMaps, idObjmaps, idmaps);
+		}
+		
+		System.out.println("-----------------");
+		for(String id:services.list()) {
+			services.ListProperties(id, serMap);
+			System.out.println("**************");
+		}
+		
+		String SerId="S22";
+		String Value="66";
+		String SKey=cmdMaps.get("");
+		services.SetDevProperties(SerId, Value, SKey, SerDevMaps, idmaps, idObjmaps, objMaps, serMap, contMap);
+		
+		
+		for(String id:services.list()) {
+			services.ListProperties(id, serMap);
+			System.out.println("**************");
+		}
+		
+		
+		System.out.println(cmdMaps);
+		outputTime();
+		
+//		Sleep();
+//		
+//		Sleep();
+		outputTime();
+		
+		
+		
+	}
 	/**
 	 * device 底层设备类名
 	 * 
@@ -488,17 +540,6 @@ public class Relation {
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * 测试
-	 * 
-	 * @param args
-	 */
-
-	public static void main(String[] args) throws Exception {
-		config();
-		generateDeviceAndRuntime();
 	}
 
 //根据运行时对象找底层设备对象
@@ -657,4 +698,95 @@ public class Relation {
 
 	}
 
+	/**
+	 * 测试
+	 * 
+	 * @param args
+	 */
+
+	public static void main(String[] args) throws Exception {
+		Map<String, String> cmdMaps=new HashMap<>();
+		config();
+		
+
+		String filePath = "C:\\Users\\more\\Desktop\\code\\exttst.txt";
+
+		cmdMaps=fileOp(filePath);
+//		System.out.println(cmdMaps);
+		generateDeviceAndRuntime(cmdMaps);
+
+	}
+
+	public static Map<String, String> fileOp(String filePath) {
+		Map<String, String> map = new HashMap<>();
+		List<String> tempList = new ArrayList<>();
+
+		try (FileReader reader = new FileReader(filePath); BufferedReader br = new BufferedReader(reader) // 建立一个对象，它把文件内容转成计算机能读懂的语言
+		) {
+			String line;
+			// 网友推荐更加简洁的写法
+			while ((line = br.readLine()) != null) {
+				// 一次读入一行数据
+//				System.out.println(line);
+				char c = line.charAt(0);
+				if (check(line))
+					tempList.add(line);
+				else
+					continue;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		for (int i = 0; i < tempList.size(); i++) {
+			String tString = tempList.get(i);
+			map.put(tString.split(":")[0], removeNonLetters(tString.split(":")[1]));
+		}
+
+//		System.out.println(tString.split(":")[0]);
+
+//		System.out.println(map);
+//		System.out.println(map.size());
+		if(map.size()==3) {
+			map.put("attribute", "none");
+		}
+		return map;
+
+	}
+
+	public static boolean check(String fstrData) {
+		char c = fstrData.charAt(0);
+		if (((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public static String removeNonLetters(String original) {
+		StringBuffer aBuffer = new StringBuffer(original.length());
+		char aCharacter;
+		for (int i = 0; i < original.length(); i++) {
+			aCharacter = original.charAt(i);
+			if (Character.isLetter(aCharacter)) {
+				aBuffer.append(new Character(aCharacter));
+			}
+		}
+		return new String(aBuffer);
+
+	}
+
+
+	
+	public static void outputTime() {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        System.out.println(df.format(new Date()));
+	}
+	
+	public static void Sleep() throws InterruptedException {
+		Thread.currentThread();
+//		Thread.sleep(1000);
+	}
+	
+	
 }
