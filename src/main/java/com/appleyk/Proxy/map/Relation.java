@@ -709,7 +709,8 @@ public class Relation {
 		config();
 		
 
-		String filePath = "C:\\Users\\more\\Desktop\\code\\exttst.txt";
+//		String filePath = "C:\\Users\\more\\Desktop\\code\\exttst.txt";
+		String filePath = "exttst.txt";
 
 		cmdMaps=fileOp(filePath);
 //		System.out.println(cmdMaps);

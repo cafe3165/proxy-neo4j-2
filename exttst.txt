@@ -1,0 +1,5 @@
+1
+device:['air conditioner']
+location:['sitting room']
+attribute:['temperature']
+operation:turn up
