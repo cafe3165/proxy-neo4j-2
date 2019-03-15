@@ -73,10 +73,10 @@ public class Relation {
 
 	// 服务id与运行时设备id的映射 k-服务id v-运行时设备id S11:2101973421
 	public static Map<String, String> SerDevMaps = new HashMap<>();
-	
+
 //	存放服务id与服务对象的映射
 	public static Map<String, Object> serMap = new HashMap<>();
-	
+
 //	存放服务id与环境id的映射
 	public static Map<String, String> serConMap = new HashMap<>();
 //	存放环境id与环境对象的映射
@@ -174,8 +174,6 @@ public class Relation {
 	 */
 	public static void generateDeviceAndRuntime(Map<String, String> cmdMaps) throws Exception {
 
-
-
 //		存放位置id与位置对象的映射
 		Map<String, Object> locationMap = new HashMap<>();
 
@@ -187,8 +185,6 @@ public class Relation {
 
 //		存放用戶id与用戶名的映射
 		Map<String, String> userIdNameMap = new HashMap<>();
-
-
 
 //		List<HashMap<String, Object>> idObjList = new ArrayList<HashMap<String,Object>>();
 
@@ -447,48 +443,72 @@ public class Relation {
 //			contexts.ListProperties(cid, contMap);
 //			
 //		}
-		
-		testCmd(cmdMaps,airConditions,services,ls);
+
+		testCmd(cmdMaps, airConditions, services, ls);
 
 	}
-	//	核心是去找service，并最终执行
-	public static void testCmd(Map<String, String> cmdMaps,Devices devices,Services services,Locations locations) throws InterruptedException {
+
+	// 核心是去找service，并最终执行
+	public static void testCmd(Map<String, String> cmdMaps, Devices devices, Services services, Locations locations)
+			throws InterruptedException {
 //		devices.list();
 //		services.list();
 //		locations.list();
-		for(String id:devices.list()) {
+		for (String id : devices.list()) {
 			devices.ListProperties(id, objMaps, idObjmaps, idmaps);
 		}
-		
-		System.out.println("-----------------");
-		for(String id:services.list()) {
+
+		System.out.println("---------------------");
+		for (String id : services.list()) {
 			services.ListProperties(id, serMap);
-			System.out.println("**************");
+			System.out.println("*****************");
 		}
-		
-		String SerId="S22";
-		String Value="66";
-		String SKey=cmdMaps.get("");
-		services.SetDevProperties(SerId, Value, SKey, SerDevMaps, idmaps, idObjmaps, objMaps, serMap, contMap);
-		
-		
-		for(String id:services.list()) {
-			services.ListProperties(id, serMap);
-			System.out.println("**************");
-		}
-		
-		
+
+		String effectString = judgeOperation(cmdMaps.get("operation"));
+		System.out.println(effectString);
+
+		String SerId = "S22";
+//		String Value="66";
+		String SKey = cmdMaps.get("");
+//		services.SetDevProperties(SerId, Value, SKey, SerDevMaps, idmaps, idObjmaps, objMaps, serMap, contMap);
+
+//		for(String id:services.list()) {
+//			services.ListProperties(id, serMap);
+//			System.out.println("**************");
+//		}
+
 		System.out.println(cmdMaps);
-		outputTime();
-		
+//		outputTime();
+
 //		Sleep();
 //		
 //		Sleep();
-		outputTime();
-		
-		
-		
+//		outputTime();
+
 	}
+
+	public static String findSerId(Map<String,String> cmdMaps,Services services) {
+		String sid = null;
+
+		return sid;
+
+	}
+
+	public static String judgeOperation(String operation) {
+		String op = null;
+
+		switch (operation) {
+		case "turnup":
+			op = "Increase";
+			break;
+
+		default:
+			break;
+		}
+
+		return op;
+	}
+
 	/**
 	 * device 底层设备类名
 	 * 
@@ -705,14 +725,13 @@ public class Relation {
 	 */
 
 	public static void main(String[] args) throws Exception {
-		Map<String, String> cmdMaps=new HashMap<>();
+		Map<String, String> cmdMaps = new HashMap<>();
 		config();
-		
 
-//		String filePath = "C:\\Users\\more\\Desktop\\code\\exttst.txt";
-		String filePath = "exttst.txt";
+		String filePath = "C:\\Users\\more\\Desktop\\code\\exttst.txt";
+//		String filePath = "exttst.txt";
 
-		cmdMaps=fileOp(filePath);
+		cmdMaps = fileOp(filePath);
 //		System.out.println(cmdMaps);
 		generateDeviceAndRuntime(cmdMaps);
 
@@ -748,7 +767,7 @@ public class Relation {
 
 //		System.out.println(map);
 //		System.out.println(map.size());
-		if(map.size()==3) {
+		if (map.size() == 3) {
 			map.put("attribute", "none");
 		}
 		return map;
@@ -777,17 +796,14 @@ public class Relation {
 
 	}
 
-
-	
 	public static void outputTime() {
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-        System.out.println(df.format(new Date()));
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 设置日期格式
+		System.out.println(df.format(new Date()));
 	}
-	
+
 	public static void Sleep() throws InterruptedException {
 		Thread.currentThread();
 //		Thread.sleep(1000);
 	}
-	
-	
+
 }
