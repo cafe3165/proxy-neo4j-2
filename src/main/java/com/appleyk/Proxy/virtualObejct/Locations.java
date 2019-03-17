@@ -11,8 +11,11 @@ public class Locations {
 		LocationIdList.add(LId);
 	}
 
-	public List<String> list() {
-		System.out.println(LocationIdList);
+	public List<String> list(boolean f) {
+		if (f) {
+			System.out.println(LocationIdList);
+		}
+
 		return LocationIdList;
 
 	}

@@ -50,14 +50,14 @@ public class Panasonic {
 
 	public void down() {
     	Temperature-=0.5;
-        System.out.println("松下空调降温");
-        System.out.println(Temperature);
+        System.out.println("松下空调开始进行降温操作。");
+        System.out.println("目标温度值为： "+Temperature);
     }
     
 	public void up() {
 		Temperature+=0.5;
-        System.out.println("松下空调升温");
-        System.out.println(Temperature);
+        System.out.println("松下空调开始进行升温操作。");
+        System.out.println("目标温度值为： "+Temperature);
 	}
    
 	public double getTemperature() {
@@ -65,6 +65,7 @@ public class Panasonic {
 	}
 
 	public void setTemperature(double t) {
+//		System.out.println("松下空调温度设置为： "+t);
 		Temperature = t;
 	}
 }

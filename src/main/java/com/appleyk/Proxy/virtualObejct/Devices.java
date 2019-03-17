@@ -14,15 +14,18 @@ public class Devices {
 		ACIdList.add(deviceId);
 	}
 
-	public List<String> list() {
-		System.out.println(ACIdList);
+	public List<String> list(boolean f) {
+		if (f) {
+			System.out.println(ACIdList);
+		}
+
 		return ACIdList;
 
 	}
 
 //	列出设备的所有属性
-	public void ListProperties(String UnderDeviceId, Map<Object, Object> objMaps, Map<String, Object> idObjmaps,
-			Map<String, String> idmaps) {
+	public Object ListProperties(String UnderDeviceId, Map<Object, Object> objMaps, Map<String, Object> idObjmaps,
+			Map<String, String> idmaps, boolean f) {
 
 //		根据底层设备id 如A0找到对应的运行时设备对象id
 		String RuntimeDeviceId = "";
@@ -54,12 +57,15 @@ public class Devices {
 		Object runtimeDevice = underDevice;
 		AirCondition airCon = (AirCondition) runtimeDevice;
 
-		System.out.println("DId: " + airCon.getID());
-		System.out.println("DName: " + airCon.getDName());
-		System.out.println("LName: " + airCon.getLName());
-		System.out.println("Status: " + airCon.getStatus());
-		System.out.println("Value: " + airCon.getT());
+		if (f) {
+			System.out.println("DId: " + airCon.getID());
+			System.out.println("DName: " + airCon.getDName());
+			System.out.println("LName: " + airCon.getLName());
+			System.out.println("Status: " + airCon.getStatus());
+			System.out.println("Value: " + airCon.getT());
+		}
 
+		return airCon;
 	}
 
 }

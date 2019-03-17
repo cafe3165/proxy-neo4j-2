@@ -1,5 +1,6 @@
 1
 device:['air conditioner']
 location:['sitting room']
-attribute:['temperature']
-operation:turn up
+不存在属性
+operation:turn off
+turn off the air conditioner in the sitting room.

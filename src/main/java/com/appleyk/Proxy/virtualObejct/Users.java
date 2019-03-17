@@ -12,8 +12,11 @@ public class Users {
 	}
 
 //	列出所有用戶id
-	public List<String> list() {
-		System.out.println(UserIdList);
+	public List<String> list(boolean f) {
+		if(f) {
+			System.out.println(UserIdList);
+		}
+		
 		return UserIdList;
 
 	}

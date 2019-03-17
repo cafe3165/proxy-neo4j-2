@@ -227,7 +227,7 @@ public class Relation {
 		}
 		// 列出运行时的空调对应的底层空调
 //		System.out.println("当前设备为：");
-		List<String> airCList = airConditions.list();
+		List<String> airCList = airConditions.list(false);
 //		根据设备id获得所有设备的属性
 //		System.out.println("设备属性列表：");
 //		for (String underDeviceId : airCList) {
@@ -245,7 +245,6 @@ public class Relation {
 		String DName = "Gree";
 		String CType = "temperature";
 		String Effect = "Reduce";
-
 		String DeviceId = findUnderid(gree.hashCode());
 		String RutimeDeviceId = String.valueOf(gree.hashCode());
 
@@ -284,6 +283,13 @@ public class Relation {
 		String CType6 = "temperature";
 		String Effect6 = "Increase";
 
+		String ServiceId7 = "S14";
+		String DeviceId7 = findUnderid(gree.hashCode());
+		String RutimeDeviceId7 = String.valueOf(gree.hashCode());
+		String DName7 = "Gree";
+		String CType7 = "temperature";
+		String Effect7 = "Monitor";
+
 		Service coolService = new Service();
 		Service coolS = (Service) initService(ServiceId, DeviceId, RutimeDeviceId, DName, CType, Effect, coolService);
 
@@ -307,10 +313,15 @@ public class Relation {
 		Service upS4 = (Service) initService(ServiceId6, DeviceId6, RutimeDeviceId6, DName6, CType6, Effect6,
 				upsService4);
 
+		Service moniService2 = new Service();
+		Service moniS2 = (Service) initService(ServiceId7, DeviceId7, RutimeDeviceId7, DName7, CType7, Effect7,
+				moniService2);
+
 //		服务配置
 		serConfig(ndAirCondition, coolS);
 		serConfig(ndAirCondition, assS);
 		serConfig(ndAirCondition, upS4);
+		serConfig(ndAirCondition, moniS2);
 		serConfig(panasonic, coolS2);
 		serConfig(panasonic, upS3);
 		serConfig(panasonic, moniS);
@@ -318,10 +329,8 @@ public class Relation {
 		Services services = new Services();
 		services.addlist(SerDevMaps);
 		List<String> SerList = new ArrayList<>();
-		System.out.println("当前的服务为：");
-		SerList = services.list(true);
+		SerList = services.list(false);
 
-		System.out.println();
 //		测试设置服务属性值，根据映射设置设备属性值
 //		String SerId2 = "S11";
 //		String Value2 = "On";
@@ -348,7 +357,7 @@ public class Relation {
 		Locations ls = new Locations();
 		ls.addlist(l1.getLId());
 		ls.addlist(l2.getLId());
-		List<String> LList = ls.list();
+		List<String> LList = ls.list(false);
 //		ls.ListProperties(l1.getLId(), locationMap);
 //		ls.ListProperties(l2.getLId(), locationMap);
 
@@ -380,7 +389,7 @@ public class Relation {
 		users.addlist(u1.getUId());
 		users.addlist(u2.getUId());
 
-		List<String> UList = users.list();
+		List<String> UList = users.list(false);
 //		列出用户的属性
 //		for (String uid : UList) {
 //			User tempUser = (User) userMap.get(uid);
@@ -407,6 +416,7 @@ public class Relation {
 
 //		服务与环境的绑定
 		serConMap.put(CID2, moniS.getServiceId());
+		serConMap.put(CID1, moniS2.getServiceId());
 //		System.out.println(serConMap);
 		c11 = (Context) initContext(CUName1, CCType1, RMin1, RMax1, CID1, c11, userIdNameMap, userMap, serConMap,
 				serMap);
@@ -446,28 +456,59 @@ public class Relation {
 //			contexts.ListProperties(cid, contMap);
 //			
 //		}
+		Sleep();
+		System.out.println("测试开始");
+		Sleep();
+		if (!cmdMaps.get("attribute").equals("none")) {
+			testCmd(cmdMaps, services);
+		} else {
+			System.out.println("这是开关操作");
+			testCmd2(cmdMaps, airConditions);
+		}
 
-		testCmd(cmdMaps, airConditions, services, ls, contexts);
+	}
+
+//	核心是去寻找设备，并改变其状态
+	public static void testCmd2(Map<String, String> cmdMaps, Devices devices) {
+
+		System.out.println(cmdMaps);
+		Object airCon = null;
+		for (String did : devices.list(false)) {
+			AirCondition airCondition = (AirCondition) devices.ListProperties(did, objMaps, idObjmaps, idmaps, false);
+			if (airCondition.getLName().equals(cmdMaps.get("location"))) {
+				airCon = airCondition;
+				break;
+			}
+
+		}
+		AirCondition airC = (AirCondition) airCon;
+
+		System.out.println(airC.getLName());
+		String op = judgeOperation(cmdMaps.get("operation"));
+		System.out.println(op);
 
 	}
 
 	// 核心是去找service，并最终执行
-	public static void testCmd(Map<String, String> cmdMaps, Devices devices, Services services, Locations locations,
-			Contexts contexts) throws InterruptedException {
+	public static void testCmd(Map<String, String> cmdMaps, Services services) throws InterruptedException {
 		Map<String, String> doMap = new HashMap<String, String>();
 
+		System.out.println("根据已知信息，寻找对应服务。");
+		Sleep();
 		doMap = findSer(cmdMaps, services);
-		System.out.println(doMap);
+		Sleep();
+		System.out.println("开始执行服务操作：");
+//		System.out.println(doMap);
 		String SerId = doMap.get("SerId");
 		String Value = doMap.get("Value");
 		String SKey = doMap.get("SKey");
 		services.SetDevProperties(SerId, Value, SKey, SerDevMaps, idmaps, idObjmaps, objMaps, serMap, contMap);
-		changeContext(services, contexts);
-		for (String cid : contexts.list(false)) {
-			Context context = (Context) contexts.ListProperties(cid, contMap, true);
-		}
-
-		judgeContext(contexts, services);
+//		changeContext(services, contexts);
+//		for (String cid : contexts.list(false)) {
+//			Context context = (Context) contexts.ListProperties(cid, contMap, true);
+//		}
+//
+//		judgeContext(contexts, services);
 //		outputTime();
 
 //		Sleep();
@@ -543,6 +584,9 @@ public class Relation {
 		case "Increase":
 			type = "stepUp";
 			break;
+		case "Reduce":
+			type = "stepDown";
+			break;
 
 		default:
 			break;
@@ -552,12 +596,21 @@ public class Relation {
 
 	}
 
-	public static Map<String, String> findSer(Map<String, String> cmdMaps, Services services) {
+	public static Map<String, String> findSer(Map<String, String> cmdMaps, Services services)
+			throws InterruptedException {
 		Map<String, String> doMap = new HashMap<>();
 //		String sid = null;
-		System.out.println(cmdMaps);
+//		System.out.println(cmdMaps);
+		Sleep();
 		List<String> sList = services.list(false);
+		System.out.println("列出当前所有服务：");
+		System.out.println(sList);
+		Sleep();
+		System.out.println("开始寻找符合条件的服务：");
 		for (String i : sList) {
+			Sleep();
+			System.out.println("当前服务为： " + i);
+			Sleep();
 			Service tObject = new Service();
 			tObject = (Service) services.ListProperties(i, serMap, false);
 			String effectString = judgeOperation(cmdMaps.get("operation"));
@@ -571,7 +624,19 @@ public class Relation {
 				doMap.put("SerId", tObject.getServiceId());
 				doMap.put("Value", judgeType(cmdMaps));
 				doMap.put("SKey", judgeSkey(cmdMaps));
+				Sleep();
+				System.out.println("已找到服务，对应id为：" + tObject.getServiceId());
+				Sleep();
+				System.out.println("位置为：" + tObject.getLName());
+				Sleep();
+				System.out.println("提供该服务的设备为：" + tObject.getDName());
+				Sleep();
+				System.out.println("需要修改的属性值为：" + tObject.getCType());
+				break;
+			} else {
+				System.out.println("服务" + i + "不符合条件。");
 			}
+
 		}
 
 		return doMap;
@@ -597,6 +662,15 @@ public class Relation {
 		switch (operation) {
 		case "turnup":
 			op = "Increase";
+			break;
+		case "turndown":
+			op = "Reduce";
+			break;
+		case "turnoff":
+			op = "off";
+			break;
+		case "turnon":
+			op = "on";
 			break;
 
 		default:
@@ -701,6 +775,7 @@ public class Relation {
 		return obj;
 
 	}
+
 //  服务配置
 	public static void serConfig(AirCondition airCon, Service service) {
 //		将服务id与运行时设备id绑定
@@ -716,7 +791,7 @@ public class Relation {
 		Service service = (Service) ser;
 		AirCondition airc = (AirCondition) dev;
 		service.setLName(airc.getLName());
-		service.setStatus(airc.getStatus());
+		service.setStatus("off");
 		service.setSValue(airc.getT());
 //		Field[] fields = d.getClass().getDeclaredFields();
 //		List<String> atrrList = new ArrayList<>();
@@ -806,24 +881,25 @@ public class Relation {
 
 		c.setLName(user.getLName());
 		c.setLId(user.getLId());
-
+//		System.out.println(serConMap);
 		if (serConMap.get(CId) != null) {
 			Service s = (Service) serMap.get(serConMap.get(CId));
 //			System.out.println(s.getStatus());
 			if (s.getStatus().equals("on")) {
 				c.setCValue(s.getSValue());
-				System.out.println(c.getCId());
-				System.out.println(c.getLName());
+//				System.out.println(c.getCId());
+//				System.out.println(c.getLName());
 			}
 
 			else {
 
-				System.out.println("已找到该服务，但服务尚未开启！");
+//				System.out.println("已找到该服务，但服务尚未开启！");
 			}
 		}
 
 		else {
-			System.out.println("没有找到提供该服务的设备！");
+//			System.out.println(c.getCId());
+//			System.out.println("没有找到提供该服务的设备！");
 		}
 
 		return c;
@@ -842,27 +918,26 @@ public class Relation {
 
 //		String filePath = "C:\\Users\\more\\Desktop\\code\\exttst.txt";
 		String filePath = "exttst.txt";
-		
+
 		cmdMaps = fileOp(filePath);
 //		System.out.println(cmdMaps);
 		generateDeviceAndRuntime(cmdMaps);
 
 	}
 
-	public static Map<String, String> fileOp(String filePath) {
-		
+	public static Map<String, String> fileOp(String filePath) throws InterruptedException {
+
 		Map<String, String> map = new HashMap<>();
 		List<String> tempList = new ArrayList<>();
 
 		try (FileReader reader = new FileReader(filePath); BufferedReader br = new BufferedReader(reader) // 建立一个对象，它把文件内容转成计算机能读懂的语言
 		) {
 			String line;
-			
+
 			// 网友推荐更加简洁的写法
 			while ((line = br.readLine()) != null) {
 				// 一次读入一行数据
-//				System.out.println(line);
-//				System.out.println("已读取命令："+line);
+
 				char c = line.charAt(0);
 				if (check(line))
 					tempList.add(line);
@@ -872,7 +947,10 @@ public class Relation {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		System.out.println("已读取命令：" + tempList.get(tempList.size() - 1));
+		Sleep();
+		System.out.println("正在进行解析......");
+		tempList.remove(tempList.size() - 1);
 		for (int i = 0; i < tempList.size(); i++) {
 			String tString = tempList.get(i);
 			map.put(tString.split(":")[0], removeNonLetters(tString.split(":")[1]));
@@ -885,7 +963,20 @@ public class Relation {
 		if (map.size() == 3) {
 			map.put("attribute", "none");
 		}
+		Sleep();
+		System.out.println("解析结果如下：");
+		Sleep();
+		outPutInfo(map);
+		Sleep();
 		return map;
+
+	}
+
+	public static void outPutInfo(Map<String, String> map) {
+
+		for (String p : map.keySet()) {
+			System.out.println(p + " : " + map.get(p));
+		}
 
 	}
 
@@ -918,7 +1009,7 @@ public class Relation {
 
 	public static void Sleep() throws InterruptedException {
 		Thread.currentThread();
-//		Thread.sleep(1000);
+		Thread.sleep(0);
 	}
 
 }
