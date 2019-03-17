@@ -43,6 +43,12 @@ public class Gree {
         System.out.println("格力空调降温");
         System.out.println(Temperature);
     }
+	
+	public void warm() {
+		Temperature+=0.5;
+        System.out.println("格力空调升温");
+        System.out.println(Temperature);
+	}
  
 	public double getTemperature() {
 		return Temperature;

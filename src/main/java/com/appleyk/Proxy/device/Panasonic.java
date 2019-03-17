@@ -54,6 +54,11 @@ public class Panasonic {
         System.out.println(Temperature);
     }
     
+	public void up() {
+		Temperature+=0.5;
+        System.out.println("松下空调升温");
+        System.out.println(Temperature);
+	}
    
 	public double getTemperature() {
 		return Temperature;

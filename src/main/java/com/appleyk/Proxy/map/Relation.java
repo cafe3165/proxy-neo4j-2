@@ -109,10 +109,14 @@ public class Relation {
 		classMaps.put(Philips.class.getName(), AirCleanerImpl.class.getName());
 
 		// 方法之间的映射关系
-		// 1.1空调的降温方法
+		// 1.1空调的降温升温方法
 		apiMaps.put(AirCondition.class.getName() + "." + AirCondition.class.getMethod("cool").getName(),
 				Arrays.asList(new String[] { Gree.class.getName() + "." + Gree.class.getMethod("cool").getName(),
 						Panasonic.class.getName() + "." + Panasonic.class.getMethod("down").getName() }));
+		apiMaps.put(AirCondition.class.getName() + "." + AirCondition.class.getMethod("warm").getName(),
+				Arrays.asList(new String[] { Gree.class.getName() + "." + Gree.class.getMethod("warm").getName(),
+						Panasonic.class.getName() + "." + Panasonic.class.getMethod("up").getName() }));
+
 		apiMaps.put(AirCondition.class.getName() + "." + AirCondition.class.getMethod("setT", double.class).getName(),
 				Arrays.asList(new String[] {
 						Gree.class.getName() + "." + Gree.class.getMethod("setTemperature", double.class).getName(),
@@ -200,7 +204,7 @@ public class Relation {
 		ndAirCondition.getID();
 		ndAirCondition.setT(16);
 		ndAirCondition.setLName("bedroom");
-		ndAirCondition.setStatus("off");
+		ndAirCondition.setStatus("on");
 		idObjmaps.put(String.valueOf(gree.hashCode()), objMaps.get(gree));
 		idmaps.put(gree.getID(), String.valueOf(gree.hashCode()));
 
@@ -273,6 +277,13 @@ public class Relation {
 		String CType5 = "temperature";
 		String Effect5 = "Monitor";
 
+		String ServiceId6 = "S13";
+		String DeviceId6 = findUnderid(gree.hashCode());
+		String RutimeDeviceId6 = String.valueOf(gree.hashCode());
+		String DName6 = "Gree";
+		String CType6 = "temperature";
+		String Effect6 = "Increase";
+
 		Service coolService = new Service();
 		Service coolS = (Service) initService(ServiceId, DeviceId, RutimeDeviceId, DName, CType, Effect, coolService);
 
@@ -292,41 +303,32 @@ public class Relation {
 		Service moniS = (Service) initService(ServiceId5, DeviceId5, RutimeDeviceId5, DName5, CType5, Effect5,
 				moniService);
 
-//		将服务id与运行时设备id绑定
-		SerDevMaps.put(coolS.getServiceId(), coolS.getRutimeDeviceId());
-		SerDevMaps.put(coolS2.getServiceId(), coolS2.getRutimeDeviceId());
-		SerDevMaps.put(upS3.getServiceId(), upS3.getRutimeDeviceId());
-		SerDevMaps.put(assS.getServiceId(), assS.getRutimeDeviceId());
-		SerDevMaps.put(moniS.getServiceId(), moniS.getRutimeDeviceId());
+		Service upsService4 = new Service();
+		Service upS4 = (Service) initService(ServiceId6, DeviceId6, RutimeDeviceId6, DName6, CType6, Effect6,
+				upsService4);
 
-//		将服务id与服务对象绑定
-		serMap.put(coolS.getServiceId(), coolS);
-		serMap.put(coolS2.getServiceId(), coolS2);
-		serMap.put(upS3.getServiceId(), upS3);
-		serMap.put(assS.getServiceId(), assS);
-		serMap.put(moniS.getServiceId(), moniS);
-
-//		Field[] fields = objMaps.get(gree).getClass().getDeclaredFields();
-//		服务从设备哪里获得相应的属性值
-		SerMapDev_AirC(ndAirCondition, coolS);
-		SerMapDev_AirC(panasonic, coolS2);
-		SerMapDev_AirC(panasonic, upS3);
-		SerMapDev_AirC(ndAirCondition, assS);
-		SerMapDev_AirC(panasonic, moniS);
+//		服务配置
+		serConfig(ndAirCondition, coolS);
+		serConfig(ndAirCondition, assS);
+		serConfig(ndAirCondition, upS4);
+		serConfig(panasonic, coolS2);
+		serConfig(panasonic, upS3);
+		serConfig(panasonic, moniS);
 
 		Services services = new Services();
 		services.addlist(SerDevMaps);
 		List<String> SerList = new ArrayList<>();
 		System.out.println("当前的服务为：");
-		SerList = services.list();
+		SerList = services.list(true);
 
 		System.out.println();
 //		测试设置服务属性值，根据映射设置设备属性值
-		String SerId2 = "S11";
-		String Value2 = "On";
-		String SKey2 = "Status";
-		services.SetDevProperties(SerId2, Value2, SKey2, SerDevMaps, idmaps, idObjmaps, objMaps, serMap, contMap);
-//		位置生成
+//		String SerId2 = "S11";
+//		String Value2 = "On";
+//		String SKey2 = "Status";
+//		services.SetDevProperties(SerId2, Value2, SKey2, SerDevMaps, idmaps, idObjmaps, objMaps, serMap, contMap);
+
+		// 位置生成
 		String lName1 = "bedroom";
 		String lId1 = "L1";
 		Location l1 = new Location();
@@ -392,18 +394,19 @@ public class Relation {
 		Context c21 = new Context();
 
 		String CUName1 = "Jack";
-		String CCType1 = "Temperature";
+		String CCType1 = "temperature";
 		double RMin1 = 20.0;
 		double RMax1 = 30.0;
 		String CID1 = "C11";
 
 		String CUName2 = "Ben";
-		String CCType2 = "Temperature";
+		String CCType2 = "temperature";
 		double RMin2 = 15.0;
 		double RMax2 = 25.0;
 		String CID2 = "C12";
 
-		serConMap.put(CID1, moniS.getServiceId());
+//		服务与环境的绑定
+		serConMap.put(CID2, moniS.getServiceId());
 //		System.out.println(serConMap);
 		c11 = (Context) initContext(CUName1, CCType1, RMin1, RMax1, CID1, c11, userIdNameMap, userMap, serConMap,
 				serMap);
@@ -427,9 +430,9 @@ public class Relation {
 
 //		System.out.println(SerDevMaps);
 //		System.out.println(idmaps);
-		String SerId = "S12";
-		String Value = "50";
-		String SKey = "Status";
+//		String SerId = "S12";
+//		String Value = "50";
+//		String SKey = "Status";
 //		services.SetDevProperties(SerId, Value, SKey, SerDevMaps, idmaps, idObjmaps, objMaps, serMap, contMap);
 
 //		for (String si : SerList) {
@@ -444,57 +447,147 @@ public class Relation {
 //			
 //		}
 
-		testCmd(cmdMaps, airConditions, services, ls);
+		testCmd(cmdMaps, airConditions, services, ls, contexts);
 
 	}
 
 	// 核心是去找service，并最终执行
-	public static void testCmd(Map<String, String> cmdMaps, Devices devices, Services services, Locations locations)
-			throws InterruptedException {
-//		devices.list();
-//		services.list();
-//		locations.list();
-//		for (String id : devices.list()) {
-//			devices.ListProperties(id, objMaps, idObjmaps, idmaps);
-//		}
+	public static void testCmd(Map<String, String> cmdMaps, Devices devices, Services services, Locations locations,
+			Contexts contexts) throws InterruptedException {
+		Map<String, String> doMap = new HashMap<String, String>();
 
-//		System.out.println("---------------------");
-//		for (String id : services.list()) {
-//			services.ListProperties(id, serMap);
-//			System.out.println("*****************");
-//		}
+		doMap = findSer(cmdMaps, services);
+		System.out.println(doMap);
+		String SerId = doMap.get("SerId");
+		String Value = doMap.get("Value");
+		String SKey = doMap.get("SKey");
+		services.SetDevProperties(SerId, Value, SKey, SerDevMaps, idmaps, idObjmaps, objMaps, serMap, contMap);
+		changeContext(services, contexts);
+		for (String cid : contexts.list(false)) {
+			Context context = (Context) contexts.ListProperties(cid, contMap, true);
+		}
 
-//		String effectString = judgeOperation(cmdMaps.get("operation"));
-//		System.out.println(effectString);
-
-//		String SerId = "S22";
-//		String Value="66";
-//		String SKey = cmdMaps.get("");
-//		services.SetDevProperties(SerId, Value, SKey, SerDevMaps, idmaps, idObjmaps, objMaps, serMap, contMap);
-
-//		for(String id:services.list()) {
-//			services.ListProperties(id, serMap);
-//			System.out.println("**************");
-//		}
-
-		findSerId(cmdMaps, services);
+		judgeContext(contexts, services);
 //		outputTime();
 
 //		Sleep();
 //		
+
 //		Sleep();
 //		outputTime();
 
 	}
 
-	public static String findSerId(Map<String,String> cmdMaps,Services services) {
-		String sid = null;
+	public static void changeContext(Services services, Contexts contexts) {
+//		services.list();
+//		contexts.list();
+
+		for (String sid : services.list(false)) {
+			Service service = (Service) services.ListProperties(sid, serMap, false);
+
+			for (String cid : contexts.list(false)) {
+				Context context = (Context) contexts.ListProperties(cid, contMap, false);
+
+				if (service.getLName().equals(context.getLName()) && service.getCType().equals(context.getCType())) {
+
+					if ((service.getEffect().equals("Increase") || service.getEffect().equals("Reduce")
+							|| service.getEffect().equals("Assign")) && service.getStatus().equals("on")) {
+						context.setCValue(service.getSValue());
+//						System.out.println(service.getServiceId() + context.getCId());
+						context.setCValue(service.getSValue());
+
+					}
+
+				}
+
+			}
+		}
+
+	}
+
+	public static boolean judgeContext(Contexts contexts, Services services) {
+		boolean status = true;
+
+		for (String cid : contexts.list(false)) {
+			Context context = (Context) contexts.ListProperties(cid, contMap, false);
+
+			if (context.getCValue() > context.getRMax()) {
+				System.out.println(context.getCValue());
+
+			}
+
+			if (context.getCValue() < context.getRMin()) {
+				System.out.println(context.getCValue());
+				for (String sid : services.list(false)) {
+					Service service = new Service();
+					service = (Service) services.ListProperties(sid, serMap, false);
+					if (service.getLName().equals(context.getLName())
+							&& service.getCType().equals(context.getCType())) {
+						System.out.println(service.getServiceId() + service.getStatus() + service.getEffect());
+
+					}
+				}
+			}
+
+		}
+
+		return status;
+	}
+
+	public static String judgeType(Map<String, String> cmdMaps) {
+
+		String type = null;
+		String t = null;
+		t = judgeOperation(cmdMaps.get("operation"));
+		switch (t) {
+		case "Increase":
+			type = "stepUp";
+			break;
+
+		default:
+			break;
+		}
+
+		return type;
+
+	}
+
+	public static Map<String, String> findSer(Map<String, String> cmdMaps, Services services) {
+		Map<String, String> doMap = new HashMap<>();
+//		String sid = null;
 		System.out.println(cmdMaps);
-		services.list();
-		
-		
-		
-		return sid;
+		List<String> sList = services.list(false);
+		for (String i : sList) {
+			Service tObject = new Service();
+			tObject = (Service) services.ListProperties(i, serMap, false);
+			String effectString = judgeOperation(cmdMaps.get("operation"));
+			if (tObject.getLName().equals(cmdMaps.get("location"))
+					&& tObject.getCType().equals(cmdMaps.get("attribute"))
+					&& tObject.getEffect().equals(effectString)) {
+//				System.out.println(tObject.getServiceId());
+//				services.ListProperties(i, serMap, true);
+//				System.out.println("------------------------------");
+//				sid=tObject.getServiceId();
+				doMap.put("SerId", tObject.getServiceId());
+				doMap.put("Value", judgeType(cmdMaps));
+				doMap.put("SKey", judgeSkey(cmdMaps));
+			}
+		}
+
+		return doMap;
+
+	}
+
+	public static String judgeSkey(Map<String, String> cmdMaps) {
+		String key = null;
+
+		if (cmdMaps.get("attribute") != null) {
+			key = "CType";
+		} else {
+			key = "Status";
+		}
+
+		return key;
 
 	}
 
@@ -608,6 +701,15 @@ public class Relation {
 		return obj;
 
 	}
+//  服务配置
+	public static void serConfig(AirCondition airCon, Service service) {
+//		将服务id与运行时设备id绑定
+		SerDevMaps.put(service.getServiceId(), service.getRutimeDeviceId());
+//		将服务id与服务对象绑定
+		serMap.put(service.getServiceId(), service);
+//		服务从设备哪里获得相应的属性值
+		SerMapDev_AirC(airCon, service);
+	}
 
 //	从服务所绑定的设备中提取对应属性值
 	public static void SerMapDev_AirC(Object dev, Object ser) {
@@ -707,9 +809,15 @@ public class Relation {
 
 		if (serConMap.get(CId) != null) {
 			Service s = (Service) serMap.get(serConMap.get(CId));
-			if (s.getStatus().equals("on"))
+//			System.out.println(s.getStatus());
+			if (s.getStatus().equals("on")) {
 				c.setCValue(s.getSValue());
+				System.out.println(c.getCId());
+				System.out.println(c.getLName());
+			}
+
 			else {
+
 				System.out.println("已找到该服务，但服务尚未开启！");
 			}
 		}
@@ -734,7 +842,7 @@ public class Relation {
 
 //		String filePath = "C:\\Users\\more\\Desktop\\code\\exttst.txt";
 		String filePath = "exttst.txt";
-
+		
 		cmdMaps = fileOp(filePath);
 //		System.out.println(cmdMaps);
 		generateDeviceAndRuntime(cmdMaps);
@@ -742,16 +850,19 @@ public class Relation {
 	}
 
 	public static Map<String, String> fileOp(String filePath) {
+		
 		Map<String, String> map = new HashMap<>();
 		List<String> tempList = new ArrayList<>();
 
 		try (FileReader reader = new FileReader(filePath); BufferedReader br = new BufferedReader(reader) // 建立一个对象，它把文件内容转成计算机能读懂的语言
 		) {
 			String line;
+			
 			// 网友推荐更加简洁的写法
 			while ((line = br.readLine()) != null) {
 				// 一次读入一行数据
 //				System.out.println(line);
+//				System.out.println("已读取命令："+line);
 				char c = line.charAt(0);
 				if (check(line))
 					tempList.add(line);

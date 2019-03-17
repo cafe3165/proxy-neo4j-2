@@ -9,7 +9,8 @@ import com.appleyk.Proxy.runtime.AirCondition;
 import com.appleyk.Proxy.virtualObejct.Service;
 
 public class Services {
-	public List<String> sl = new ArrayList<String>();
+	public static List<String> sl = new ArrayList<String>();
+	public static Map<String, Object> serObjmaps = new HashMap<>();
 //	public HashMap<Object,List<String>> propertiesList=new HashMap<Object,List<String>>();
 	public static Map<String, String> sdmapHashMap = new HashMap<>();
 
@@ -19,8 +20,11 @@ public class Services {
 		}
 	}
 
-	public List<String> list() {
-		System.out.println(sl);
+	public List<String> list(boolean f) {
+		if (f) {
+			System.out.println(sl);
+		}
+
 		return sl;
 	}
 
@@ -29,7 +33,7 @@ public class Services {
 	}
 
 //	列出服务的所有属性
-	public void ListProperties(String SerId, Map<String, Object> sMap) {
+	public Object ListProperties(String SerId, Map<String, Object> sMap, boolean f) {
 //		sMap存放服务id与服务对象的映射
 //		根据服务id(SerId)去寻找对应的服务对象
 		Service s = new Service();
@@ -37,24 +41,31 @@ public class Services {
 			if (SerId.equals(sid))
 				s = (Service) sMap.get(sid);
 		}
-		System.out.println("ServiceId: " + s.getServiceId());
-		System.out.println("DeviceId: " + s.getDeviceId());
-//		System.out.println("RutimeDeviceId: " + s.getRutimeDeviceId());
-		System.out.println("DName: " + s.getDName());
-		System.out.println("CType: " + s.getCType());
-		System.out.println("Effect: " + s.getEffect());
-		
-		System.out.println("LName: " + s.getLName());
-		System.out.println("Status: " + s.getStatus());
-		System.out.println("SValue: " + s.getSValue());
+		if (f) {
+			System.out.println("ServiceId: " + s.getServiceId());
+			System.out.println("DeviceId: " + s.getDeviceId());
+//			System.out.println("RutimeDeviceId: " + s.getRutimeDeviceId());
+			System.out.println("DName: " + s.getDName());
+			System.out.println("CType: " + s.getCType());
+			System.out.println("Effect: " + s.getEffect());
 
+			System.out.println("LName: " + s.getLName());
+			System.out.println("Status: " + s.getStatus());
+			System.out.println("SValue: " + s.getSValue());
+		}
+
+		return s;
 	}
 
 	// 对服务进行属性设置从而转化成对设备的设值
 	public void SetDevProperties(String SerId, String Value, String SKey, Map<String, String> SerDevMaps,
 			Map<String, String> idmaps, Map<String, Object> idObjmaps, Map<Object, Object> objMaps,
-			Map<String, Object> SerMap,Map<String, Object> contMap) {
-//		获得当前操作服务对象
+			Map<String, Object> SerMap, Map<String, Object> contMap) {
+//
+//		System.out.println("SerId: " + SerId);
+//		System.out.println("Value: " + Value);
+//		System.out.println("Skey: " + SKey);
+		// 获得当前操作服务对象
 		Service currentService = (Service) SerMap.get(SerId);
 //		服务id与运行时设备id的映射:SerDevMaps  {S11=2101973421, S22=685325104, S21=685325104}
 
@@ -84,20 +95,18 @@ public class Services {
 		if (isNum(Value) && currentService.getEffect().equals("Assign")) {
 			airCon.setT(Double.valueOf(Value.toString()));
 			currentService.setSValue(Double.valueOf(Value.toString()));
-			
+
 //			System.out.println(contMap);
 //			查找相关环境状态
-			for(String cid:contMap.keySet()) {
-				Context c=new Context();
-				c=(Context)contMap.get(cid);
-				if(c.getLName().equals(currentService.getLName())) {
+			for (String cid : contMap.keySet()) {
+				Context c = new Context();
+				c = (Context) contMap.get(cid);
+				if (c.getLName().equals(currentService.getLName())) {
 					c.setCValue(Double.valueOf(Value.toString()));
 				}
-					
+
 			}
-			
-			
-			
+
 			System.out.println("Set Service.SValue and Device.Key Success!");
 			return;
 		} else {
@@ -108,8 +117,27 @@ public class Services {
 			if (SKey.equals("Status")) {
 				airCon.setStatus(Value);
 				currentService.setStatus(Value);
-				
-				System.out.println("Set Service.Status and Device.Status Success!");
+//				System.out.println("Set Service.Status and Device.Status Success!");
+				return;
+			}
+
+			if (SKey.equals("CType")) {
+				if (Value.equals("stepUp")) {
+//					System.out.println(airCon.getDName());
+//					System.out.println(airCon.getT());
+					currentService.setStatus("on");
+					currentService.setSValue(currentService.getSValue() + 0.5);
+					airCon.warm();
+					Service rService = (Service) findAnotherService(SerMap, Value,currentService);
+					rService.setStatus("off");
+
+				} else {
+					currentService.setStatus("on");
+					currentService.setSValue(currentService.getSValue() - 0.5);
+					airCon.cool();
+				}
+
+//				System.out.println("Set Service.Status and Device.Status Success!");
 				return;
 			}
 
@@ -125,6 +153,28 @@ public class Services {
 				return false;
 		}
 		return true;
+
+	}
+
+	public static Object findAnotherService(Map<String, Object> SerMap, String Value,Service cs) {
+		Object ser = null;
+
+		for (String sid : SerMap.keySet()) {
+			Service service = new Service();
+			service = (Service) SerMap.get(sid);
+//			System.out.println(service.getServiceId());
+			if (Value.equals("stepUp") && service.getEffect().equals("Reduce")&&service.getLName().equals(cs.getLName())) {
+				ser = service;
+				break;
+			}
+//			if(Value.equals("setUp")&&service.getEffect().equals("Reduce")) {
+//				ser=service;
+//				break;
+//			}
+
+		}
+
+		return ser;
 
 	}
 }

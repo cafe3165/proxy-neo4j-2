@@ -91,6 +91,13 @@ public class AirConditionImpl implements AirCondition {
 		// TODO Auto-generated method stub
 		return status;
 	}
+
+
+	@Override
+	public void warm() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 	
