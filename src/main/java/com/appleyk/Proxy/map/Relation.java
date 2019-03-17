@@ -454,22 +454,22 @@ public class Relation {
 //		devices.list();
 //		services.list();
 //		locations.list();
-		for (String id : devices.list()) {
-			devices.ListProperties(id, objMaps, idObjmaps, idmaps);
-		}
+//		for (String id : devices.list()) {
+//			devices.ListProperties(id, objMaps, idObjmaps, idmaps);
+//		}
 
-		System.out.println("---------------------");
-		for (String id : services.list()) {
-			services.ListProperties(id, serMap);
-			System.out.println("*****************");
-		}
+//		System.out.println("---------------------");
+//		for (String id : services.list()) {
+//			services.ListProperties(id, serMap);
+//			System.out.println("*****************");
+//		}
 
-		String effectString = judgeOperation(cmdMaps.get("operation"));
-		System.out.println(effectString);
+//		String effectString = judgeOperation(cmdMaps.get("operation"));
+//		System.out.println(effectString);
 
-		String SerId = "S22";
+//		String SerId = "S22";
 //		String Value="66";
-		String SKey = cmdMaps.get("");
+//		String SKey = cmdMaps.get("");
 //		services.SetDevProperties(SerId, Value, SKey, SerDevMaps, idmaps, idObjmaps, objMaps, serMap, contMap);
 
 //		for(String id:services.list()) {
@@ -477,7 +477,7 @@ public class Relation {
 //			System.out.println("**************");
 //		}
 
-		System.out.println(cmdMaps);
+		findSerId(cmdMaps, services);
 //		outputTime();
 
 //		Sleep();
@@ -489,7 +489,11 @@ public class Relation {
 
 	public static String findSerId(Map<String,String> cmdMaps,Services services) {
 		String sid = null;
-
+		System.out.println(cmdMaps);
+		services.list();
+		
+		
+		
 		return sid;
 
 	}
@@ -728,8 +732,8 @@ public class Relation {
 		Map<String, String> cmdMaps = new HashMap<>();
 		config();
 
-		String filePath = "C:\\Users\\more\\Desktop\\code\\exttst.txt";
-//		String filePath = "exttst.txt";
+//		String filePath = "C:\\Users\\more\\Desktop\\code\\exttst.txt";
+		String filePath = "exttst.txt";
 
 		cmdMaps = fileOp(filePath);
 //		System.out.println(cmdMaps);
