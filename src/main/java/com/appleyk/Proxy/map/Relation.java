@@ -191,7 +191,9 @@ public class Relation {
 		Map<String, String> userIdNameMap = new HashMap<>();
 
 //		List<HashMap<String, Object>> idObjList = new ArrayList<HashMap<String,Object>>();
-
+		Sleep();
+		System.out.println("系统初始化开始。");
+		Sleep();
 		// 底层设备生成 返回一个运行时对象
 		AirCondition gree = (AirCondition) generate(Gree.class.getName());
 		AirCondition panasonic = (AirCondition) generate(Panasonic.class.getName());
@@ -202,17 +204,17 @@ public class Relation {
 		ndAirCondition.setID("A0");
 		ndAirCondition.setDName("Gree");
 		ndAirCondition.getID();
-		ndAirCondition.setT(16);
+		ndAirCondition.setT(0.0);
 		ndAirCondition.setLName("bedroom");
-		ndAirCondition.setStatus("on");
+		ndAirCondition.setStatus("off");
 		idObjmaps.put(String.valueOf(gree.hashCode()), objMaps.get(gree));
 		idmaps.put(gree.getID(), String.valueOf(gree.hashCode()));
 
 		panasonic.setID("A1");
 		panasonic.setDName("Panasonic");
 		panasonic.setLName("sittingroom");
-		panasonic.setT(20);
-		panasonic.setStatus("on");
+		panasonic.setT(0.0);
+		panasonic.setStatus("off");
 		idObjmaps.put(String.valueOf(panasonic.hashCode()), objMaps.get(panasonic));
 		idmaps.put(panasonic.getID(), String.valueOf(panasonic.hashCode()));
 
@@ -457,6 +459,8 @@ public class Relation {
 //			
 //		}
 		Sleep();
+		System.out.println("系统初始化结束。");
+		Sleep();
 		System.out.println("测试开始");
 		Sleep();
 		if (!cmdMaps.get("attribute").equals("none")) {
@@ -482,11 +486,10 @@ public class Relation {
 
 		}
 		AirCondition airC = (AirCondition) airCon;
-
-		System.out.println(airC.getLName());
 		String op = judgeOperation(cmdMaps.get("operation"));
-		System.out.println(op);
-
+		System.out.println(airC.getDName()+"空调当前状态为："+airC.getStatus());
+		airC.setStatus(op);
+		System.out.println(airC.getDName()+"空调当前状态为："+airC.getStatus());
 	}
 
 	// 核心是去找service，并最终执行

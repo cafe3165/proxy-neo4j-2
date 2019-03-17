@@ -19,6 +19,13 @@ public class Panasonic {
 	}
 
 	public void setStatus(String status) {
+		if(status.equals("on")) {
+			System.out.println("松下空调打开。");
+		}
+		else {
+			System.out.println("松下空调关闭。");
+		}
+
 		this.status = status;
 	}
 
@@ -65,7 +72,7 @@ public class Panasonic {
 	}
 
 	public void setTemperature(double t) {
-//		System.out.println("松下空调温度设置为： "+t);
+		System.out.println("松下空调温度设置为： "+t);
 		Temperature = t;
 	}
 }

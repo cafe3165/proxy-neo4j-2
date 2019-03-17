@@ -2,5 +2,5 @@
 device:['air conditioner']
 location:['sitting room']
 不存在属性
-operation:turn off
-turn off the air conditioner in the sitting room.
+operation:turn on
+turn on the air conditioner in the sitting room.

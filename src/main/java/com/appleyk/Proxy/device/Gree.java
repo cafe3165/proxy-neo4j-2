@@ -55,7 +55,7 @@ public class Gree {
 	}
 
 	public void setTemperature(double t) {
-//		System.out.println("格力空调温度设置为： "+t);
+		System.out.println("格力空调温度设置为： "+t);
 		Temperature = t;
 	}
 
@@ -66,6 +66,13 @@ public class Gree {
 	}
 
 	public void setStatus(String status) {
+		if(status.equals("on")) {
+			System.out.println("格力空调打开。");
+		}
+		else {
+			System.out.println("格力空调关闭。");
+		}
+		
 		this.status = status;
 	}
 	
