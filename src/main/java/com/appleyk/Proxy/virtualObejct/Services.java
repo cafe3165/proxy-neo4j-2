@@ -73,29 +73,22 @@ public class Services {
 
 //		通过服务映射获得运行时设备id(dId)
 		String dId = SerDevMaps.get(SerId);
-		sleepUtil.Sleep();
-		System.out.println("根据服务对象获得其绑定的运行时设备id： " + dId);
 		Object destinDevice = null;
 //		运行时对象标识id与运行时对象的映射
 //		{2101973421=com.appleyk.Proxy.device.Gree@1b6d3586, 685325104=com.appleyk.Proxy.device.Panasonic@4554617c}
 //		通过运行时对象标识id映射寻找目标运行时对象设备destinDevice
-		sleepUtil.Sleep();
 		System.out.println("通过运行时对象标识id映射寻找目标运行时对象设备：");
 		for (String iString : idObjmaps.keySet()) {
-			sleepUtil.Sleep();
 			if (iString.equals(dId))
 				destinDevice = idObjmaps.get(iString);
 		}
-		sleepUtil.Sleep();
-		System.out.println("获得运行时设备对象，其对应的hashcode为："+destinDevice.hashCode());
-		sleepUtil.Sleep();
+		System.out.println("获得运行时设备对象");
 		System.out.println("继续寻找底层设备对象：");
 //		
 		Object underDevice = null;
 //		{null=com.appleyk.Proxy.device.Gree@1b6d3586, null=com.appleyk.Proxy.device.Panasonic@4554617c}
 //		通过底层设备与运行时设备的映射找到底层设备对象underDevice
 		for (Object o : objMaps.keySet()) {
-			sleepUtil.Sleep();
 			if (objMaps.get(o).hashCode() == destinDevice.hashCode()) {
 				underDevice = o;
 			}
@@ -104,9 +97,6 @@ public class Services {
 //		将找到的底层设备实例化为运行时空调
 		Object runtimeDevice = underDevice;
 		AirCondition airCon = (AirCondition) runtimeDevice;
-		sleepUtil.Sleep();
-		System.out.println("找到底层设备对象，其设备序号为："+airCon.getID()+",设备名为："+airCon.getDName());
-		sleepUtil.Sleep();
 		System.out.println("操作底层设备对象：");
 //		将输入的SKey与Value进行匹配处理，SKey是服务属性，如：DName，LName；Value可以是数字或者字符串
 		if (isNum(Value) && currentService.getEffect().equals("Assign")) {
@@ -128,7 +118,6 @@ public class Services {
 			return;
 		} else {
 			if (isNum(Value)) {
-				sleepUtil.Sleep();
 				System.out.println("不是Assign情况，不能赋值");
 				return;
 			}
@@ -141,40 +130,28 @@ public class Services {
 //			System.out.println(SKey);
 			if (SKey.equals("CType")) {
 				if (Value.equals("stepUp")) {
-					sleepUtil.Sleep();
 					System.out.println("该操作为"+currentService.getEffect()+"操作");
-					sleepUtil.Sleep();
 					System.out.println("当前服务状态为："+currentService.getStatus());
-					sleepUtil.Sleep();
 					System.out.println("当前服务SValue值为："+currentService.getSValue());
-					sleepUtil.Sleep();
 					System.out.println("打开服务。");
 					
 					currentService.setStatus("on");
 					currentService.setSValue(currentService.getSValue() + 1);
-					sleepUtil.Sleep();
 					System.out.println("当前服务状态为："+currentService.getStatus());
-					sleepUtil.Sleep();
 					System.out.println("当前服务SValue值为："+currentService.getSValue());
 					airCon.warm();
 					Service rService = (Service) findAnotherService(SerMap, Value, currentService);
 					rService.setStatus("off");
 
 				} else {
-					sleepUtil.Sleep();
 					System.out.println("该操作为"+currentService.getEffect()+"操作");
-					sleepUtil.Sleep();
 					System.out.println("当前服务状态为："+currentService.getStatus());
-					sleepUtil.Sleep();
 					System.out.println("当前服务SValue值为："+currentService.getSValue());
-					sleepUtil.Sleep();
 					System.out.println("打开服务。");
 					
 					currentService.setStatus("on");
 					currentService.setSValue(currentService.getSValue() - 1);
-					sleepUtil.Sleep();
 					System.out.println("当前服务状态为："+currentService.getStatus());
-					sleepUtil.Sleep();
 					System.out.println("当前服务SValue值为："+currentService.getSValue());
 					airCon.cool();
 				}

@@ -32,7 +32,6 @@ public class fileUtil {
 			e.printStackTrace();
 		}
 		System.out.println("已读取命令：" + tempList.get(tempList.size() - 1));
-		sleepUtil.Sleep();
 		System.out.println("正在进行解析......");
 		tempList.remove(tempList.size() - 1);
 		for (int i = 0; i < tempList.size(); i++) {
@@ -47,11 +46,8 @@ public class fileUtil {
 		if (map.size() == 3) {
 			map.put("attribute", "none");
 		}
-		sleepUtil.Sleep();
 		System.out.println("解析结果如下：");
-		sleepUtil.Sleep();
 		charUtil.outPutInfo(map);
-		sleepUtil.Sleep();
 		return map;
 
 	}

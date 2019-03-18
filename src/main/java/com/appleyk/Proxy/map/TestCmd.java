@@ -37,9 +37,7 @@ public class TestCmd {
 		Map<String, String> doMap = new HashMap<String, String>();
 
 		System.out.println("根据已知信息，寻找对应服务。");
-		sleepUtil.Sleep();
 		doMap = findUtil.findSer(cmdMaps, services, serMap);
-		sleepUtil.Sleep();
 		System.out.println("开始执行服务操作：");
 //		System.out.println(doMap);
 		String SerId = doMap.get("SerId");

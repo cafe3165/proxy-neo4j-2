@@ -4,6 +4,9 @@ import com.appleyk.Proxy.Proxy.ProxyUtils;
 import com.appleyk.Proxy.virtualObejct.Services;
 import com.appleyk.Proxy.virtualObejct.User;
 import com.appleyk.Proxy.virtualObejct.Users;
+import com.appleyk.Proxy.virtualObejct.GenRTModel.genContext;
+import com.appleyk.Proxy.virtualObejct.GenRTModel.genLocation;
+import com.appleyk.Proxy.virtualObejct.GenRTModel.genUser;
 import com.appleyk.Proxy.virtualObejct.init.initConcept;
 import com.appleyk.Proxy.virtualObejct.Context;
 import com.appleyk.Proxy.virtualObejct.Contexts;
@@ -103,9 +106,7 @@ public class Relation {
 		Map<String, String> userIdNameMap = new HashMap<>();
 
 //		List<HashMap<String, Object>> idObjList = new ArrayList<HashMap<String,Object>>();
-		sleepUtil.Sleep();
 		System.out.println("系统初始化开始。");
-		sleepUtil.Sleep();
 		// 底层设备生成 返回一个运行时对象
 		AirCondition gree = (AirCondition) generate(Gree.class.getName());
 		AirCondition panasonic = (AirCondition) generate(Panasonic.class.getName());
@@ -243,209 +244,39 @@ public class Relation {
 
 		Services services = new Services();
 		services.addlist(SerDevMaps);
-		List<String> SerList = new ArrayList<>();
-		SerList = services.list(false);
+		List<String> SList = services.list(false);
 
-//		测试设置服务属性值，根据映射设置设备属性值
-//		String SerId2 = "S11";
-//		String Value2 = "On";
-//		String SKey2 = "Status";
-//		services.SetDevProperties(SerId2, Value2, SKey2, SerDevMaps, idmaps, idObjmaps, objMaps, serMap, contMap);
+//		生成位置
+		Locations locations = new Locations();
+		genLocation.genL(locIdNameMap, locationMap, objMaps, SerDevMaps, idmaps, locations);
+		List<String> LList = locations.list(false);
 
-		// 位置生成
-		String lName1 = "bedroom";
-		String lId1 = "L1";
-		Location l1 = new Location();
-
-		String lName2 = "sittingroom";
-		String lId2 = "L2";
-		Location l2 = new Location();
-
-		locIdNameMap.put(lName1, lId1);
-		locIdNameMap.put(lName2, lId2);
-		l1 = (Location) initConcept.initLocation(lId1, lName1, l1, objMaps, SerDevMaps, idmaps);
-		l2 = (Location) initConcept.initLocation(lId2, lName2, l2, objMaps, SerDevMaps, idmaps);
-		locationMap.put(l1.getLId(), l1);
-		locationMap.put(l2.getLId(), l2);
-
-		Locations ls = new Locations();
-		ls.addlist(l1.getLId());
-		ls.addlist(l2.getLId());
-		List<String> LList = ls.list(false);
-//		ls.ListProperties(l1.getLId(), locationMap);
-//		ls.ListProperties(l2.getLId(), locationMap);
-
-		String UName1 = "Jack";
-		String UId1 = "U1";
-		String ULName1 = "bedroom";
-		List<String> uclist1 = new ArrayList<>();
-		uclist1.add("C11");
-
-		String UName2 = "Ben";
-		String UId2 = "U2";
-		String ULName2 = "sittingroom";
-		List<String> uclist2 = new ArrayList<>();
-		uclist2.add("C21");
-
-		User u1 = new User();
-		User u2 = new User();
-		u1 = (User) initConcept.initUser(UName1, ULName1, UId1, u1, locIdNameMap, uclist1);
-		u2 = (User) initConcept.initUser(UName2, ULName2, UId2, u2, locIdNameMap, uclist2);
-
-//		System.out.println(u1.getContextList());
-
-		userMap.put(u1.getUId(), u1);
-		userMap.put(u2.getUId(), u2);
-		userIdNameMap.put(UName1, UId1);
-		userIdNameMap.put(UName2, UId2);
-
+//		生成用户
 		Users users = new Users();
-		users.addlist(u1.getUId());
-		users.addlist(u2.getUId());
-
+		genUser.genU(locIdNameMap, userMap, userIdNameMap, users);
 		List<String> UList = users.list(false);
-//		列出用户的属性
-//		for (String uid : UList) {
-//			User tempUser = (User) userMap.get(uid);
-//			users.ListProperties(tempUser.getUId(), userMap);
-//		}
-
+//		创建位于关系
 		LocatedIn.createLocatedIn(UList, LList, userMap, locationMap);
 		LocatedIn.createLocatedIn(airCList, LList, uidMaps, locationMap);
 
-		Context c11 = new Context();
-		Context c21 = new Context();
-
-		String CUName1 = "Jack";
-		String CCType1 = "temperature";
-		double RMin1 = 20.0;
-		double RMax1 = 30.0;
-		String CID1 = "C11";
-
-		String CUName2 = "Ben";
-		String CCType2 = "temperature";
-		double RMin2 = 15.0;
-		double RMax2 = 25.0;
-		String CID2 = "C12";
-
-//		服务与环境的绑定
-		serConMap.put(CID2, moniS.getServiceId());
-		serConMap.put(CID1, moniS2.getServiceId());
-//		System.out.println(serConMap);
-		c11 = (Context) initConcept.initContext(CUName1, CCType1, RMin1, RMax1, CID1, c11, userIdNameMap, userMap,
-				serConMap, serMap);
-		c21 = (Context) initConcept.initContext(CUName2, CCType2, RMin2, RMax2, CID2, c21, userIdNameMap, userMap,
-				serConMap, serMap);
-
-		contMap.put(c11.getCId(), c11);
-		contMap.put(c21.getCId(), c21);
-//		System.out.println(c11.getCId() + " " + c11.getCType() + " " + c11.getRMin() + " " + c11.getRMax()+" "+c11.getCValue());
+//		生成环境
 		Contexts contexts = new Contexts();
-		contexts.addlist(CID1);
-		contexts.addlist(CID2);
+		genContext.genC(serConMap, userIdNameMap, userMap, serMap, contMap, services, contexts);
+		List<String> CList = contexts.list(false);
 
-//		contexts.list();
-//		
-//		for(String cid:contexts.list(true)) {
-//			System.out.println("------------------");
-//			contexts.ListProperties(cid, contMap,true);
-//			
-//		}
-
-//		System.out.println(SerDevMaps);
-//		System.out.println(idmaps);
-//		String SerId = "S12";
-//		String Value = "50";
-//		String SKey = "Status";
-//		services.SetDevProperties(SerId, Value, SKey, SerDevMaps, idmaps, idObjmaps, objMaps, serMap, contMap);
-
-//		for (String si : SerList) {
-//			System.out.println("---------------------------");
-//			services.ListProperties(si, serMap);
-//		}
-//		services.ListProperties(SerId, serMap);
-
-//		for(String cid:contexts.list()) {
-//			System.out.println("------------------");
-//			contexts.ListProperties(cid, contMap);
-//			
-//		}
-		sleepUtil.Sleep();
 		System.out.println("系统初始化结束。");
-		sleepUtil.Sleep();
 		System.out.println("测试开始");
-		sleepUtil.Sleep();
 		if (!cmdMaps.get("attribute").equals("none")) {
 			TestCmd.testCmd(cmdMaps, services, SerDevMaps, idmaps, idObjmaps, objMaps, serMap, contMap);
 		} else {
 			System.out.println("这是开关操作");
-			TestCmd.testCmd2(cmdMaps, airConditions,idmaps,idObjmaps,objMaps);
+			TestCmd.testCmd2(cmdMaps, airConditions, idmaps, idObjmaps, objMaps);
 		}
+//
+//		inference.judgeContext(contexts, services, serMap, contMap);
+//		inference.changeContext(services, contexts, serMap, contMap);
 
 	}
-
-
-
-	public static void changeContext(Services services, Contexts contexts) {
-//		services.list();
-//		contexts.list();
-
-		for (String sid : services.list(false)) {
-			Service service = (Service) services.ListProperties(sid, serMap, false);
-
-			for (String cid : contexts.list(false)) {
-				Context context = (Context) contexts.ListProperties(cid, contMap, false);
-
-				if (service.getLName().equals(context.getLName()) && service.getCType().equals(context.getCType())) {
-
-					if ((service.getEffect().equals("Increase") || service.getEffect().equals("Reduce")
-							|| service.getEffect().equals("Assign")) && service.getStatus().equals("on")) {
-						context.setCValue(service.getSValue());
-//						System.out.println(service.getServiceId() + context.getCId());
-						context.setCValue(service.getSValue());
-
-					}
-
-				}
-
-			}
-		}
-
-	}
-
-	public static boolean judgeContext(Contexts contexts, Services services) {
-		boolean status = true;
-
-		for (String cid : contexts.list(false)) {
-			Context context = (Context) contexts.ListProperties(cid, contMap, false);
-
-			if (context.getCValue() > context.getRMax()) {
-				System.out.println(context.getCValue());
-
-			}
-
-			if (context.getCValue() < context.getRMin()) {
-				System.out.println(context.getCValue());
-				for (String sid : services.list(false)) {
-					Service service = new Service();
-					service = (Service) services.ListProperties(sid, serMap, false);
-					if (service.getLName().equals(context.getLName())
-							&& service.getCType().equals(context.getCType())) {
-						System.out.println(service.getServiceId() + service.getStatus() + service.getEffect());
-
-					}
-				}
-			}
-
-		}
-
-		return status;
-	}
-
-	
-
-	
-
 
 	/**
 	 * device 底层设备类名

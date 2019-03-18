@@ -40,16 +40,12 @@ public class findUtil {
 		Map<String, String> doMap = new HashMap<>();
 //			String sid = null;
 //			System.out.println(cmdMaps);
-		sleepUtil.Sleep();
 		List<String> sList = services.list(false);
 		System.out.println("列出当前所有服务：");
 		System.out.println(sList);
-		sleepUtil.Sleep();
 		System.out.println("开始寻找符合条件的服务：");
 		for (String i : sList) {
-			sleepUtil.Sleep();
 			System.out.println("当前服务为： " + i);
-			sleepUtil.Sleep();
 			Service tObject = new Service();
 			tObject = (Service) services.ListProperties(i, serMap, false);
 			String effectString = judge.judgeOperation(cmdMaps.get("operation"));
@@ -63,13 +59,9 @@ public class findUtil {
 				doMap.put("SerId", tObject.getServiceId());
 				doMap.put("Value", judge.judgeType(cmdMaps));
 				doMap.put("SKey", judge.judgeSkey(cmdMaps));
-				sleepUtil.Sleep();
 				System.out.println("已找到服务，对应id为：" + tObject.getServiceId());
-				sleepUtil.Sleep();
 				System.out.println("位置为：" + tObject.getLName());
-				sleepUtil.Sleep();
 				System.out.println("提供该服务的设备为：" + tObject.getDName());
-				sleepUtil.Sleep();
 				System.out.println("需要修改的属性值为：" + tObject.getCType());
 				break;
 			} else {
