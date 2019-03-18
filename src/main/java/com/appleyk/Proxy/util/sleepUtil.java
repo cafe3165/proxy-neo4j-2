@@ -7,7 +7,7 @@ public class sleepUtil {
 	
 	public static void Sleep() throws InterruptedException {
 		Thread.currentThread();
-		Thread.sleep(1000);
+		Thread.sleep(0);
 	}
 	public static void outputTime() {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 设置日期格式
