@@ -24,7 +24,7 @@ import com.appleyk.Proxy.runtime.AirConditionImpl;
 import com.appleyk.Proxy.virtualObejct.Devices;
 import com.appleyk.Proxy.runtime.Light;
 import com.appleyk.Proxy.runtime.LightImpl;
-
+import com.appleyk.Proxy.util.sleepUtil;
 import com.appleyk.Proxy.relation.*;
 
 import static org.hamcrest.CoreMatchers.containsString;
@@ -191,9 +191,9 @@ public class Relation {
 		Map<String, String> userIdNameMap = new HashMap<>();
 
 //		List<HashMap<String, Object>> idObjList = new ArrayList<HashMap<String,Object>>();
-		Sleep();
+		sleepUtil.Sleep();
 		System.out.println("系统初始化开始。");
-		Sleep();
+		sleepUtil.Sleep();
 		// 底层设备生成 返回一个运行时对象
 		AirCondition gree = (AirCondition) generate(Gree.class.getName());
 		AirCondition panasonic = (AirCondition) generate(Panasonic.class.getName());
@@ -458,11 +458,11 @@ public class Relation {
 //			contexts.ListProperties(cid, contMap);
 //			
 //		}
-		Sleep();
+		sleepUtil.Sleep();
 		System.out.println("系统初始化结束。");
-		Sleep();
+		sleepUtil.Sleep();
 		System.out.println("测试开始");
-		Sleep();
+		sleepUtil.Sleep();
 		if (!cmdMaps.get("attribute").equals("none")) {
 			testCmd(cmdMaps, services);
 		} else {
@@ -475,7 +475,7 @@ public class Relation {
 //	核心是去寻找设备，并改变其状态
 	public static void testCmd2(Map<String, String> cmdMaps, Devices devices) {
 
-		System.out.println(cmdMaps);
+//		System.out.println(cmdMaps);
 		Object airCon = null;
 		for (String did : devices.list(false)) {
 			AirCondition airCondition = (AirCondition) devices.ListProperties(did, objMaps, idObjmaps, idmaps, false);
@@ -488,6 +488,7 @@ public class Relation {
 		AirCondition airC = (AirCondition) airCon;
 		String op = judgeOperation(cmdMaps.get("operation"));
 		System.out.println(airC.getDName()+"空调当前状态为："+airC.getStatus());
+		System.out.println("改变空调"+airC.getDName()+"状态。");
 		airC.setStatus(op);
 		System.out.println(airC.getDName()+"空调当前状态为："+airC.getStatus());
 	}
@@ -497,9 +498,9 @@ public class Relation {
 		Map<String, String> doMap = new HashMap<String, String>();
 
 		System.out.println("根据已知信息，寻找对应服务。");
-		Sleep();
+		sleepUtil.Sleep();
 		doMap = findSer(cmdMaps, services);
-		Sleep();
+		sleepUtil.Sleep();
 		System.out.println("开始执行服务操作：");
 //		System.out.println(doMap);
 		String SerId = doMap.get("SerId");
@@ -604,16 +605,16 @@ public class Relation {
 		Map<String, String> doMap = new HashMap<>();
 //		String sid = null;
 //		System.out.println(cmdMaps);
-		Sleep();
+		sleepUtil.Sleep();
 		List<String> sList = services.list(false);
 		System.out.println("列出当前所有服务：");
 		System.out.println(sList);
-		Sleep();
+		sleepUtil.Sleep();
 		System.out.println("开始寻找符合条件的服务：");
 		for (String i : sList) {
-			Sleep();
+			sleepUtil.Sleep();
 			System.out.println("当前服务为： " + i);
-			Sleep();
+			sleepUtil.Sleep();
 			Service tObject = new Service();
 			tObject = (Service) services.ListProperties(i, serMap, false);
 			String effectString = judgeOperation(cmdMaps.get("operation"));
@@ -627,13 +628,13 @@ public class Relation {
 				doMap.put("SerId", tObject.getServiceId());
 				doMap.put("Value", judgeType(cmdMaps));
 				doMap.put("SKey", judgeSkey(cmdMaps));
-				Sleep();
+				sleepUtil.Sleep();
 				System.out.println("已找到服务，对应id为：" + tObject.getServiceId());
-				Sleep();
+				sleepUtil.Sleep();
 				System.out.println("位置为：" + tObject.getLName());
-				Sleep();
+				sleepUtil.Sleep();
 				System.out.println("提供该服务的设备为：" + tObject.getDName());
-				Sleep();
+				sleepUtil.Sleep();
 				System.out.println("需要修改的属性值为：" + tObject.getCType());
 				break;
 			} else {
@@ -951,7 +952,7 @@ public class Relation {
 			e.printStackTrace();
 		}
 		System.out.println("已读取命令：" + tempList.get(tempList.size() - 1));
-		Sleep();
+		sleepUtil.Sleep();
 		System.out.println("正在进行解析......");
 		tempList.remove(tempList.size() - 1);
 		for (int i = 0; i < tempList.size(); i++) {
@@ -966,11 +967,11 @@ public class Relation {
 		if (map.size() == 3) {
 			map.put("attribute", "none");
 		}
-		Sleep();
+		sleepUtil.Sleep();
 		System.out.println("解析结果如下：");
-		Sleep();
+		sleepUtil.Sleep();
 		outPutInfo(map);
-		Sleep();
+		sleepUtil.Sleep();
 		return map;
 
 	}
@@ -1005,14 +1006,8 @@ public class Relation {
 
 	}
 
-	public static void outputTime() {
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 设置日期格式
-		System.out.println(df.format(new Date()));
-	}
 
-	public static void Sleep() throws InterruptedException {
-		Thread.currentThread();
-		Thread.sleep(0);
-	}
+
+	
 
 }

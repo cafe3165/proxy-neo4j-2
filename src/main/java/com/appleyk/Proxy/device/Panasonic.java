@@ -56,13 +56,13 @@ public class Panasonic {
 
 
 	public void down() {
-    	Temperature-=0.5;
+    	Temperature-=1;
         System.out.println("松下空调开始进行降温操作。");
         System.out.println("目标温度值为： "+Temperature);
     }
     
 	public void up() {
-		Temperature+=0.5;
+		Temperature+=1;
         System.out.println("松下空调开始进行升温操作。");
         System.out.println("目标温度值为： "+Temperature);
 	}
