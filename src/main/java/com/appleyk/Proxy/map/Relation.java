@@ -6,6 +6,7 @@ import com.appleyk.Proxy.virtualObejct.AcReduceT;
 import com.appleyk.Proxy.virtualObejct.Services;
 import com.appleyk.Proxy.virtualObejct.User;
 import com.appleyk.Proxy.virtualObejct.Users;
+import com.appleyk.Proxy.virtualObejct.init.initConcept;
 import com.appleyk.Proxy.virtualObejct.Context;
 import com.appleyk.Proxy.virtualObejct.Contexts;
 import com.appleyk.Proxy.virtualObejct.Location;
@@ -295,40 +296,40 @@ public class Relation {
 		String Effect7 = "Monitor";
 
 		Service coolService = new Service();
-		Service coolS = (Service) initService(ServiceId, DeviceId, RutimeDeviceId, DName, CType, Effect, coolService);
+		Service coolS = (Service) initConcept.initService(ServiceId, DeviceId, RutimeDeviceId, DName, CType, Effect, coolService);
 
 		Service coolService2 = new Service();
-		Service coolS2 = (Service) initService(ServiceId2, DeviceId2, RutimeDeviceId2, DName2, CType2, Effect2,
+		Service coolS2 = (Service) initConcept.initService(ServiceId2, DeviceId2, RutimeDeviceId2, DName2, CType2, Effect2,
 				coolService2);
 
 		Service upService3 = new Service();
-		Service upS3 = (Service) initService(ServiceId3, DeviceId3, RutimeDeviceId3, DName3, CType3, Effect3,
+		Service upS3 = (Service) initConcept.initService(ServiceId3, DeviceId3, RutimeDeviceId3, DName3, CType3, Effect3,
 				upService3);
 
 		Service assService = new Service();
-		Service assS = (Service) initService(ServiceId4, DeviceId4, RutimeDeviceId4, DName4, CType4, Effect4,
+		Service assS = (Service) initConcept.initService(ServiceId4, DeviceId4, RutimeDeviceId4, DName4, CType4, Effect4,
 				assService);
 
 		Service moniService = new Service();
-		Service moniS = (Service) initService(ServiceId5, DeviceId5, RutimeDeviceId5, DName5, CType5, Effect5,
+		Service moniS = (Service) initConcept.initService(ServiceId5, DeviceId5, RutimeDeviceId5, DName5, CType5, Effect5,
 				moniService);
 
 		Service upsService4 = new Service();
-		Service upS4 = (Service) initService(ServiceId6, DeviceId6, RutimeDeviceId6, DName6, CType6, Effect6,
+		Service upS4 = (Service) initConcept.initService(ServiceId6, DeviceId6, RutimeDeviceId6, DName6, CType6, Effect6,
 				upsService4);
 
 		Service moniService2 = new Service();
-		Service moniS2 = (Service) initService(ServiceId7, DeviceId7, RutimeDeviceId7, DName7, CType7, Effect7,
+		Service moniS2 = (Service) initConcept.initService(ServiceId7, DeviceId7, RutimeDeviceId7, DName7, CType7, Effect7,
 				moniService2);
 
 //		服务配置
-		serConfig(ndAirCondition, coolS);
-		serConfig(ndAirCondition, assS);
-		serConfig(ndAirCondition, upS4);
-		serConfig(ndAirCondition, moniS2);
-		serConfig(panasonic, coolS2);
-		serConfig(panasonic, upS3);
-		serConfig(panasonic, moniS);
+		initConcept.serConfig(ndAirCondition, coolS,SerDevMaps,serMap);
+		initConcept.serConfig(ndAirCondition, assS,SerDevMaps,serMap);
+		initConcept.serConfig(ndAirCondition, upS4,SerDevMaps,serMap);
+		initConcept.serConfig(ndAirCondition, moniS2,SerDevMaps,serMap);
+		initConcept.serConfig(panasonic, coolS2,SerDevMaps,serMap);
+		initConcept.serConfig(panasonic, upS3,SerDevMaps,serMap);
+		initConcept.serConfig(panasonic, moniS,SerDevMaps,serMap);
 
 		Services services = new Services();
 		services.addlist(SerDevMaps);
@@ -765,59 +766,6 @@ public class Relation {
 
 	}
 
-//	初始化服务
-	public static Object initService(String ServiceId, String DeviceId, String RutimeDeviceId, String DName,
-			String CType, String Effect, Object obj) {
-		Service ser = new Service();
-		ser.setServiceId(ServiceId);
-		ser.setDeviceId(DeviceId);
-		ser.setRutimeDeviceId(RutimeDeviceId);
-		ser.setDName(DName);
-		ser.setCType(CType);
-		ser.setEffect(Effect);
-		ser.setSValue(0.0);
-
-		obj = ser;
-		return obj;
-
-	}
-
-//  服务配置
-	public static void serConfig(AirCondition airCon, Service service) {
-//		将服务id与运行时设备id绑定
-		SerDevMaps.put(service.getServiceId(), service.getRutimeDeviceId());
-//		将服务id与服务对象绑定
-		serMap.put(service.getServiceId(), service);
-//		服务从设备哪里获得相应的属性值
-		SerMapDev_AirC(airCon, service);
-	}
-
-//	从服务所绑定的设备中提取对应属性值
-	public static void SerMapDev_AirC(Object dev, Object ser) {
-		Service service = (Service) ser;
-		AirCondition airc = (AirCondition) dev;
-		service.setLName(airc.getLName());
-		service.setStatus("off");
-		service.setSValue(airc.getT());
-//		Field[] fields = d.getClass().getDeclaredFields();
-//		List<String> atrrList = new ArrayList<>();
-
-//		System.out.println(d.getClass().getName());
-//		for (Field field : fields) {
-//			String temp = field.toString();
-//			String[] fStrings = temp.split("\\.");
-//			if (fStrings.length == 6) {
-//				atrrList.add(fStrings[5]);
-//			}
-//
-//			else {
-//				atrrList.add(fStrings[7]);
-//			}
-//
-//		}
-//		System.out.println(atrrList);
-
-	}
 
 // 	初始化位置
 	public static Object initLocation(String LId, String LName, Object location) {
