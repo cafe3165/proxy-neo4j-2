@@ -5,7 +5,9 @@ import com.appleyk.Proxy.virtualObejct.Services;
 import com.appleyk.Proxy.virtualObejct.User;
 import com.appleyk.Proxy.virtualObejct.Users;
 import com.appleyk.Proxy.virtualObejct.GenRTModel.genContext;
+import com.appleyk.Proxy.virtualObejct.GenRTModel.genDevice;
 import com.appleyk.Proxy.virtualObejct.GenRTModel.genLocation;
+import com.appleyk.Proxy.virtualObejct.GenRTModel.genService;
 import com.appleyk.Proxy.virtualObejct.GenRTModel.genUser;
 import com.appleyk.Proxy.virtualObejct.init.initConcept;
 import com.appleyk.Proxy.virtualObejct.Context;
@@ -107,157 +109,28 @@ public class Relation {
 
 //		List<HashMap<String, Object>> idObjList = new ArrayList<HashMap<String,Object>>();
 		System.out.println("系统初始化开始。");
-		// 底层设备生成 返回一个运行时对象
-		AirCondition gree = (AirCondition) generate(Gree.class.getName());
-		AirCondition panasonic = (AirCondition) generate(Panasonic.class.getName());
-
-		// 运行时对象调用
-		Object dObject = findUtil.findUnderDByRuntimeD(objMaps.get(gree), objMaps);
-		AirCondition ndAirCondition = (AirCondition) dObject;
-		ndAirCondition.setID("A0");
-		ndAirCondition.setDName("Gree");
-		ndAirCondition.getID();
-		ndAirCondition.setT(0.0);
-		ndAirCondition.setLName("bedroom");
-		ndAirCondition.setStatus("off");
-		idObjmaps.put(String.valueOf(gree.hashCode()), objMaps.get(gree));
-		idmaps.put(gree.getID(), String.valueOf(gree.hashCode()));
-
-		panasonic.setID("A1");
-		panasonic.setDName("Panasonic");
-		panasonic.setLName("sittingroom");
-		panasonic.setT(0.0);
-		panasonic.setStatus("off");
-		idObjmaps.put(String.valueOf(panasonic.hashCode()), objMaps.get(panasonic));
-		idmaps.put(panasonic.getID(), String.valueOf(panasonic.hashCode()));
-
-//		System.out.println("空调名： "+panasonic.getDName());
-//		System.out.println("空调当前温度: "+panasonic.getT());
-
-		// 运行时空调对象集合，有添加空调的方法addlist和列出运行时空调的方法list
+		
+//		生成设备
+		
 		Devices airConditions = new Devices();
-		// 遍历运行时对象标识与底层设备id的映射，添加运行时设备对应的底层设备id
-		for (Map.Entry<String, String> mEntry : idmaps.entrySet()) {
-			airConditions.addlist(mEntry.getKey());
-		}
-		// 列出运行时的空调对应的底层空调
-//		System.out.println("当前设备为：");
-		List<String> airCList = airConditions.list(false);
-//		根据设备id获得所有设备的属性
-//		System.out.println("设备属性列表：");
-//		for (String underDeviceId : airCList) {
-//			System.out.println("---------------------------");
-//			airConditions.ListProperties(underDeviceId, objMaps, idObjmaps, idmaps);
-//			
-//
-//		}
-//		System.out.println();
-
-		uidMaps.put(ndAirCondition.getID(), ndAirCondition);
-		uidMaps.put(panasonic.getID(), panasonic);
-
-		String ServiceId = "S11";
-		String DName = "Gree";
-		String CType = "temperature";
-		String Effect = "Reduce";
-		String DeviceId = findUtil.findUnderid(gree.hashCode(), idmaps);
-		String RutimeDeviceId = String.valueOf(gree.hashCode());
-
-		String ServiceId2 = "S21";
-		String DeviceId2 = findUtil.findUnderid(panasonic.hashCode(), idmaps);
-		String RutimeDeviceId2 = String.valueOf(panasonic.hashCode());
-		String DName2 = "Panasonic";
-		String CType2 = "temperature";
-		String Effect2 = "Reduce";
-
-		String ServiceId3 = "S22";
-		String DeviceId3 = findUtil.findUnderid(panasonic.hashCode(), idmaps);
-		String RutimeDeviceId3 = String.valueOf(panasonic.hashCode());
-		String DName3 = "Panasonic";
-		String CType3 = "temperature";
-		String Effect3 = "Increase";
-
-		String ServiceId4 = "S12";
-		String DeviceId4 = findUtil.findUnderid(gree.hashCode(), idmaps);
-		String RutimeDeviceId4 = String.valueOf(gree.hashCode());
-		String DName4 = "Gree";
-		String CType4 = "temperature";
-		String Effect4 = "Assign";
-
-		String ServiceId5 = "S23";
-		String DeviceId5 = findUtil.findUnderid(panasonic.hashCode(), idmaps);
-		String RutimeDeviceId5 = String.valueOf(panasonic.hashCode());
-		String DName5 = "Panasonic";
-		String CType5 = "temperature";
-		String Effect5 = "Monitor";
-
-		String ServiceId6 = "S13";
-		String DeviceId6 = findUtil.findUnderid(gree.hashCode(), idmaps);
-		String RutimeDeviceId6 = String.valueOf(gree.hashCode());
-		String DName6 = "Gree";
-		String CType6 = "temperature";
-		String Effect6 = "Increase";
-
-		String ServiceId7 = "S14";
-		String DeviceId7 = findUtil.findUnderid(gree.hashCode(), idmaps);
-		String RutimeDeviceId7 = String.valueOf(gree.hashCode());
-		String DName7 = "Gree";
-		String CType7 = "temperature";
-		String Effect7 = "Monitor";
-
-		Service coolService = new Service();
-		Service coolS = (Service) initConcept.initService(ServiceId, DeviceId, RutimeDeviceId, DName, CType, Effect,
-				coolService);
-
-		Service coolService2 = new Service();
-		Service coolS2 = (Service) initConcept.initService(ServiceId2, DeviceId2, RutimeDeviceId2, DName2, CType2,
-				Effect2, coolService2);
-
-		Service upService3 = new Service();
-		Service upS3 = (Service) initConcept.initService(ServiceId3, DeviceId3, RutimeDeviceId3, DName3, CType3,
-				Effect3, upService3);
-
-		Service assService = new Service();
-		Service assS = (Service) initConcept.initService(ServiceId4, DeviceId4, RutimeDeviceId4, DName4, CType4,
-				Effect4, assService);
-
-		Service moniService = new Service();
-		Service moniS = (Service) initConcept.initService(ServiceId5, DeviceId5, RutimeDeviceId5, DName5, CType5,
-				Effect5, moniService);
-
-		Service upsService4 = new Service();
-		Service upS4 = (Service) initConcept.initService(ServiceId6, DeviceId6, RutimeDeviceId6, DName6, CType6,
-				Effect6, upsService4);
-
-		Service moniService2 = new Service();
-		Service moniS2 = (Service) initConcept.initService(ServiceId7, DeviceId7, RutimeDeviceId7, DName7, CType7,
-				Effect7, moniService2);
-
-//		服务配置
-		initConcept.serConfig(ndAirCondition, coolS, SerDevMaps, serMap);
-		initConcept.serConfig(ndAirCondition, assS, SerDevMaps, serMap);
-		initConcept.serConfig(ndAirCondition, upS4, SerDevMaps, serMap);
-		initConcept.serConfig(ndAirCondition, moniS2, SerDevMaps, serMap);
-		initConcept.serConfig(panasonic, coolS2, SerDevMaps, serMap);
-		initConcept.serConfig(panasonic, upS3, SerDevMaps, serMap);
-		initConcept.serConfig(panasonic, moniS, SerDevMaps, serMap);
-
+		List dList = genDevice.genD(objMaps, idObjmaps, idmaps, uidMaps, airConditions);
+//		生成服务
 		Services services = new Services();
-		services.addlist(SerDevMaps);
+		genService.genS(idmaps,SerDevMaps,serMap,dList,services);
 		List<String> SList = services.list(false);
-
+//
 //		生成位置
 		Locations locations = new Locations();
 		genLocation.genL(locIdNameMap, locationMap, objMaps, SerDevMaps, idmaps, locations);
 		List<String> LList = locations.list(false);
-
+//
 //		生成用户
 		Users users = new Users();
 		genUser.genU(locIdNameMap, userMap, userIdNameMap, users);
 		List<String> UList = users.list(false);
 //		创建位于关系
-		LocatedIn.createLocatedIn(UList, LList, userMap, locationMap);
-		LocatedIn.createLocatedIn(airCList, LList, uidMaps, locationMap);
+//		LocatedIn.createLocatedIn(UList, LList, userMap, locationMap);
+//		LocatedIn.createLocatedIn(airCList, LList, uidMaps, locationMap);
 
 //		生成环境
 		Contexts contexts = new Contexts();
@@ -272,9 +145,9 @@ public class Relation {
 			System.out.println("这是开关操作");
 			TestCmd.testCmd2(cmdMaps, airConditions, idmaps, idObjmaps, objMaps);
 		}
-//
-//		inference.judgeContext(contexts, services, serMap, contMap);
-//		inference.changeContext(services, contexts, serMap, contMap);
+
+		inference.judgeContext(contexts, services, serMap, contMap);
+		inference.changeContext(services, contexts, serMap, contMap);
 
 	}
 
@@ -283,7 +156,7 @@ public class Relation {
 	 * 
 	 * @param device
 	 */
-	private static Object generate(String device) throws Exception {
+	public static Object generate(String device) throws Exception {
 		// 生成底层设备对象
 		Object deviceObj = Class.forName(device).newInstance();
 //		System.out.println("deviceObj:" + deviceObj.hashCode());
